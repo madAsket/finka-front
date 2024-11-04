@@ -9,17 +9,17 @@ import Button from "primevue/button"
 const router = useRouter();
 
 const projects = ref([
-        {
-            id: '1000',
-            current:true,
-            currency:"EUR",
-            name:"Family budgeting.",
-        },
-        {
-            id: '1000',
-            currency:"USD",
-            name:"Trips.",
-        },
+    {
+        id: '1000',
+        current:true,
+        currency:"EUR",
+        name:"Family budgeting.",
+    },
+    {
+        id: '1000',
+        currency:"USD",
+        name:"Trips.",
+    },
 ])
 onMounted(() => {
 });

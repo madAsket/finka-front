@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import UserProfileView from '@/views/profile/UserProfileView.vue'
-import ProjectExpencesTypeListView from '@/views/projects/ProjectExpencesTypeListView.vue'
 import ProjectCurrencyListView from '@/views/projects/ProjectCurrencyListView.vue'
 import ProjectUserListView from '@/views/projects/ProjectUserListView.vue'
 import ProjectsSettingsView from '@/views/projects/ProjectsSettingsView.vue'
@@ -14,6 +13,7 @@ import DashboardView from '@/views/dashboard/DashboardView.vue'
 import BalanceView from '@/views/balance/BalanceView.vue'
 import BalanceTransfersListView from '@/views/balance/BalanceTransfersListView.vue'
 import ProjectListView from '@/views/projects/ProjectListView.vue'
+import LoginView from '@/views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +21,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView, //Login or DashboardView (Edit limits will be in modal)
+      component: HomeView, //DashboardView (Edit limits will be in modal)
       children:[
         {
           path:"",
@@ -35,7 +35,11 @@ const router = createRouter({
         },
       ]
     },
-
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
     { 
       path: '/balance',
       component: BalanceView, //list of current items of balance with CRUD feature, total amount with tabs for details
@@ -84,10 +88,6 @@ const router = createRouter({
         { 
           path: ':id/currency',
           component: ProjectCurrencyListView, //list of currency with CRUD features
-        },
-        { 
-          path: ':id/expensetypes',
-          component: ProjectExpencesTypeListView, //list of type expenses with CRUD features
         },
       ]
     },

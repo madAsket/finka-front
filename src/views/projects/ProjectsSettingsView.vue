@@ -17,11 +17,6 @@ const tabItems = ref([
         icon: 'pi pi-credit-card',
         route: '/projects/1/users'
     },
-    {
-        label: "Project's expense types",
-        icon: 'pi pi-arrow-right-arrow-left',
-        route: '/projects/1/expensetypes'
-    },
 ])
 
 </script>

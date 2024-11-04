@@ -5,7 +5,7 @@ import TheBalanceInfo from './components/TheBalanceInfo.vue';
 </script>
 
 <template>
-  <TheMenu/>
+  <TheMenu />
   <div class="h-full min-h-screen w-full bg-white pb-4 pl-4 pr-4">
     <TheBalanceInfo/>
     <RouterView></RouterView>

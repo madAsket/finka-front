@@ -12,6 +12,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"orange",
             id:'3',
             label:'Продукты',
         }
@@ -21,6 +22,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"red",
             id:'3',
             label:'Такси/Транспорт',
         }
@@ -30,6 +32,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"blue",
             id:'3',
             label:'Коммуналка/Сервисы',
         }
@@ -39,6 +42,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"green",
             id:'3',
             label:'Уроки',
         }
@@ -48,6 +52,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"grey",
             id:'3',
             label:'Школа',
         }
@@ -57,6 +62,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"cyan",
             id:'3',
             label:'Праздники/Кафе',
         }
@@ -66,6 +72,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"purple",
             id:'3',
             label:'Шоппинг',
         }
@@ -75,6 +82,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"amber",
             id:'3',
             label:'Налоги/Релокация',
         }
@@ -84,6 +92,7 @@ const limits = ref([
         amount: 300,
         spent:150,
         category: {
+            color:"lime",
             id:'3',
             label:'Медицина/Здоровье',
         }
@@ -94,6 +103,9 @@ const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
 }
 
+const categoryColor = (value) => {
+    return `bg-${value}`
+}
 </script>
 <template>
 
@@ -103,10 +115,13 @@ const formatCurrency = (value) => {
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>
+        <Button  class="mr-2 mb-5" icon="pi pi-plus" label="Add category"  size="small" />
+    </div>
+    <div>
         <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="category.label" header="Category"  >
                 <template #body="{ data }">
-                    <Chip :label="data.category.label" class=" bg-orange-100"></Chip>
+                    <Chip :label="data.category.label" :pt="{chip:{background:categoryColor(data.category.color)}}"></Chip>
                 </template>
             </Column>
             <Column field="amount" header="Spent / Amount" >
