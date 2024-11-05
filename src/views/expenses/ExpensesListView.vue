@@ -82,7 +82,7 @@ const formatCurrency = (value) => {
 <template>
 <div>
     <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Current month's expenses</h1>
+        <h1 class="text-surface-700  font-bold text-2xl">Current month expenses</h1>
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>

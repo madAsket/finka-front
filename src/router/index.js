@@ -8,8 +8,8 @@ import StatisticExpensesListView from '@/views/statistic/StatisticExpensesListVi
 import StatisticDashboardView from '@/views/statistic/StatisticDashboardView.vue'
 import BalanceDepositListView from '@/views/balance/BalanceDepositListView.vue'
 import BalanceDashboardView from '@/views/balance/BalanceDashboardView.vue'
-import ExpensesLimitListView from '@/views/dashboard/ExpensesLimitListView.vue'
-import DashboardView from '@/views/dashboard/DashboardView.vue'
+import ExpensesLimitListView from '@/views/expenses/ExpensesLimitListView.vue'
+import ExpensesListView from '@/views/expenses/ExpensesListView.vue'
 import BalanceView from '@/views/balance/BalanceView.vue'
 import BalanceTransfersListView from '@/views/balance/BalanceTransfersListView.vue'
 import ProjectListView from '@/views/projects/ProjectListView.vue'
@@ -25,8 +25,8 @@ const router = createRouter({
       children:[
         {
           path:"",
-          name:"dashboard",
-          component:DashboardView
+          name:"expenses",
+          component:ExpensesListView
         },
         {
           path: '/limits',

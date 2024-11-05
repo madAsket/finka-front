@@ -4,6 +4,7 @@ import Button from "primevue/button"
 import Tabs from "primevue/tabs"
 import Tab from "primevue/tab"
 import TabList from "primevue/tablist"
+import AddExpenseModalView from "@/views/expenses/AddExpenseModalView.vue"
 
 
 const tabItems = ref([
@@ -18,6 +19,11 @@ const tabItems = ref([
         route: '/limits'
     },
 ])
+
+const isAddExpenseModalShown = ref(false);
+function showAddExpenseModal(){
+    isAddExpenseModalShown.value = true;
+}
 
 </script>
 
@@ -38,6 +44,7 @@ const tabItems = ref([
             </Tabs>
         </div>
         <RouterView></RouterView>
-        <Button rounded class="bottom-10 right-10 !fixed" icon="pi pi-plus"  aria-label="Add expense"  />
+        <Button rounded @click="showAddExpenseModal" class="bottom-10 right-10 !fixed" icon="pi pi-plus"  aria-label="Add expense"  />
+        <AddExpenseModalView v-model:visible="isAddExpenseModalShown"/>
     </div>
 </template>

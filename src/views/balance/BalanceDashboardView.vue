@@ -6,6 +6,7 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import Toolbar from "primevue/toolbar"
+import AddStorageModalView from "@/views/balance/AddStorageModalView.vue"
 
 const balance = ref([
 {
@@ -31,6 +32,11 @@ const balance = ref([
     },
 ])
 
+const isAddStorageModalShown = ref(false);
+function showAddStorageModal(){
+    isAddStorageModalShown.value = true;
+}
+
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
 }
@@ -44,7 +50,8 @@ const formatCurrency = (value) => {
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>
-        <Button  class="mr-2 mb-5" icon="pi pi-plus" label="Add storage"  size="small" />
+        <Button @click="showAddStorageModal"  class="mr-2 mb-5" icon="pi pi-plus" label="Add storage"  size="small" />
+        <AddStorageModalView v-model:visible="isAddStorageModalShown"/>
         <!-- <Toolbar class="inline-flex justify-content-start p-1 max-w-xl" :pt="{
             center:{class:'hidden'},
             end:{class:'hidden'}}">

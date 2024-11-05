@@ -5,6 +5,7 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import AddExpenseCategoryModalView from "@/views/expenses/AddExpenseCategoryModalView.vue"
 
 const limits = ref([
     {
@@ -106,17 +107,24 @@ const formatCurrency = (value) => {
 const categoryColor = (value) => {
     return `bg-${value}`
 }
+
+const isAddExpenseCategoryModalShown = ref(false);
+function showAddExpenseCategoryModal(){
+    isAddExpenseCategoryModalShown.value = true;
+}
+
 </script>
 <template>
 
 <div>
     <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Expenses Limit</h1>
+        <h1 class="text-surface-700  font-bold text-2xl">Current month limits</h1>
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>
-        <Button  class="mr-2 mb-5" icon="pi pi-plus" label="Add category"  size="small" />
+        <Button  class="mr-2 mb-5" @click="showAddExpenseCategoryModal" icon="pi pi-plus" label="Add category"  size="small" />
     </div>
+    <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown"/>
     <div>
         <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="category.label" header="Category"  >
