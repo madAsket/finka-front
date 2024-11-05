@@ -5,6 +5,7 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import InviteUserModalView from './InviteUserModalView.vue';
 
 const router = useRouter();
 
@@ -27,6 +28,12 @@ const users = ref([
 onMounted(() => {
 });
 
+const isInviteModalShown = ref(false);
+function showInviteModal(){
+    isInviteModalShown.value = true;
+}
+
+
 </script>
 <template>
 <div>
@@ -35,13 +42,20 @@ onMounted(() => {
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>
-        <Button  class="mr-2 mb-5" icon="pi pi-plus" label="Invite user"  size="small" />
+        <Button @click="showInviteModal" class="mr-2 mb-5" icon="pi pi-plus" label="Invite user"  size="small" />
     </div>
+    <InviteUserModalView v-model:visible="isInviteModalShown"/>
     <div>
         <DataTable :value="users" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="username" header="Username">
                 <template #body="{ data }">
                     <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.username" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                </template>
+            </Column>
+            <Column field="is_owner" header="Project owner" class="max-w-40 font-bold">
+                <template #body="{ data }">
+                    <span v-if="data.is_owner">Yes</span>
+                    <span v-else>No</span>
                 </template>
             </Column>
             <Column field="email" header="Email" class="max-w-40 font-bold"></Column>

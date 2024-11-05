@@ -5,6 +5,7 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import AddDepositModalView from './AddDepositModalView.vue';
 
 const router = useRouter();
 
@@ -34,6 +35,11 @@ const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
 }
 
+const isAddDepositModalShown = ref(false);
+function showDepositModal(){
+    isAddDepositModalShown.value = true;
+}
+
 </script>
 <template>
 <div>
@@ -42,8 +48,9 @@ const formatCurrency = (value) => {
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>
-        <Button  class="mr-2 mb-5" icon="pi pi-credit-card" label="Top up"  size="small" />
+        <Button @click="showDepositModal" class="mr-2 mb-5" icon="pi pi-credit-card" label="Top up"  size="small" />
     </div>
+    <AddDepositModalView v-model:visible="isAddDepositModalShown"/>
     <div>
         <DataTable :value="deposits" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
             <Column field="amount" header="Amount" >

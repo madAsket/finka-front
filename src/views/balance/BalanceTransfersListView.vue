@@ -5,6 +5,7 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import TransferModalView from './TransferModalView.vue';
 
 const router = useRouter();
 
@@ -81,6 +82,11 @@ const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
 }
 
+const isTransferModalShown = ref(false);
+function showTransferModal(){
+    isTransferModalShown.value = true;
+}
+
 </script>
 <template>
 <div>
@@ -89,8 +95,9 @@ const formatCurrency = (value) => {
         <p class="text-xs"><b>Project:</b> Family budgeting.</p>
     </div>
     <div>
-        <Button  class="mr-2 mb-5" icon="pi pi-arrow-right-arrow-left" label="Make transfer"  size="small" />
+        <Button @click="showTransferModal" class="mr-2 mb-5" icon="pi pi-arrow-right-arrow-left" label="Make transfer"  size="small" />
     </div>
+    <TransferModalView v-model:visible="isTransferModalShown"/>
     <div>
         <DataTable :value="deposits" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
             <Column field="transfer_date" header="Date"></Column>

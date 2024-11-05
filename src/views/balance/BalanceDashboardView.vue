@@ -37,6 +37,7 @@ function showAddStorageModal(){
     isAddStorageModalShown.value = true;
 }
 
+
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
 }
