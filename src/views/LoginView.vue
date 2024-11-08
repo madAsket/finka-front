@@ -3,7 +3,20 @@ import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
-const checked1 = ref(true);
+const email = ref();
+const password = ref();
+const rememberMe = ref(true);
+import { useAuthStore } from '@/stores/auth';
+
+const onLogin = ()=>{
+    const auth = useAuthStore();
+    let data = {
+        email:email.value,
+        password:password.value,
+        rememberMe:rememberMe.value,
+    }
+    return auth.login(data);
+}
 </script>
 <template>
     <div class="px-6 py-20 md:px-12 lg:px-20">
@@ -23,19 +36,20 @@ const checked1 = ref(true);
             </div>
 
             <div>
-                <label for="email1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Email</label>
-                <InputText id="email1" type="text" placeholder="Email address" class="w-full mb-4" />
-                <label for="password1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Password</label>
-                <InputText id="password1" type="password" placeholder="Password" class="w-full mb-4" />
-                <div class="flex items-center justify-between mb-12">
-                    <div class="flex items-center">
-                        <Checkbox id="rememberme1" v-model="checked1" :binary="true" class="mr-2" />
-                        <label for="rememberme1">Remember me</label>
+                <form @submit.prevent="onLogin">
+                    <label for="email1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Email</label>
+                    <InputText id="email1" v-model="email" type="text" placeholder="Email address" class="w-full mb-4" />
+                    <label for="password1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Password</label>
+                    <InputText id="password1" v-model="password" type="password" placeholder="Password" class="w-full mb-4" />
+                    <div class="flex items-center justify-between mb-12">
+                        <div class="flex items-center">
+                            <Checkbox id="rememberme1" v-model="rememberMe" :binary="true" class="mr-2" />
+                            <label for="rememberme1">Remember me</label>
+                        </div>
+                        <a class="font-medium no-underline ml-2 text-primary text-right cursor-pointer">Forgot password?</a>
                     </div>
-                    <a class="font-medium no-underline ml-2 text-primary text-right cursor-pointer">Forgot password?</a>
-                </div>
-
-                <Button label="Sign In" icon="pi pi-user" class="w-full" />
+                    <Button label="Sign In" type="submit" icon="pi pi-user" class="w-full" />
+                </form>
             </div>
         </div>
     </div>

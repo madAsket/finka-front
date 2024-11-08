@@ -14,6 +14,8 @@ import BalanceView from '@/views/balance/BalanceView.vue'
 import BalanceTransfersListView from '@/views/balance/BalanceTransfersListView.vue'
 import ProjectListView from '@/views/projects/ProjectListView.vue'
 import LoginView from '@/views/LoginView.vue'
+import { useAuthStore } from '@/stores/auth';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,7 +40,11 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      meta:{
+          authNotRequired:true,
+          onlyUnathorized:true
+      }
     },
     { 
       path: '/balance',
@@ -101,6 +107,40 @@ const router = createRouter({
       // ]
     },
   ] 
+});
+
+async function getCurrentUser(){
+  const auth = useAuthStore();
+  console.log('token exist trying get user');
+  await auth.syncCurrentUser();
+}
+
+
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore();
+      // Non-protected route, allow access
+  if(!auth.user && auth.token) {
+      try {
+        await getCurrentUser();
+        return next();
+      }catch(e){
+        next("/login");
+      }
+    // User is not authenticated, redirect to login
+  }else{
+    if(to.meta.authNotRequired) {
+      if(to.meta.onlyUnathorized && auth.user){
+          return next("/");
+        }
+      return next();
+    } else {
+      if(!auth.user){
+        next("/login");
+      }else{
+        next();
+      }
+    }
+  }
 });
 
 export default router
