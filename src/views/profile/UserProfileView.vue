@@ -1,9 +1,11 @@
 <script setup>
 import Button from "primevue/button"
 import { useAuthStore } from '@/stores/auth';
+import router from "@/router/index"
 const logout = ()=>{
     const auth = useAuthStore();
     auth.logout();
+    router.push('/login');
 }
 
 </script>

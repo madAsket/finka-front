@@ -1,22 +1,43 @@
 <script setup>
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
+import Message from 'primevue/message';
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
-const email = ref();
-const password = ref();
-const rememberMe = ref(true);
+import { useForm } from 'vee-validate';
+import * as yup from 'yup';
 import { useAuthStore } from '@/stores/auth';
+import router from "@/router/index"
+const rememberMe = ref(true);
 
-const onLogin = ()=>{
+const schema = yup.object({
+  email: yup.string().required().email().label('Email address'),
+  password: yup.string().required().min(4).label('Password'),
+});
+
+const { defineField, handleSubmit,setErrors,resetForm,errors } = useForm({
+  validationSchema: schema,
+});
+
+const [email] = defineField('email');
+const [password] = defineField('password');
+
+const onLogin = handleSubmit(async (values) => {
     const auth = useAuthStore();
-    let data = {
-        email:email.value,
-        password:password.value,
-        rememberMe:rememberMe.value,
+    const response = await auth.login(values);
+    if(response?.data?.status === "success"){
+        router.push("/");
+    }else{
+        let errors = response.data.fieldErrors;
+        if(errors){
+            setErrors(errors);
+        }else{
+            //TODO show something went wrong?
+        }
     }
-    return auth.login(data);
-}
+ 
+});
+
 </script>
 <template>
     <div class="px-6 py-20 md:px-12 lg:px-20">
@@ -36,11 +57,21 @@ const onLogin = ()=>{
             </div>
 
             <div>
-                <form @submit.prevent="onLogin">
-                    <label for="email1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Email</label>
-                    <InputText id="email1" v-model="email" type="text" placeholder="Email address" class="w-full mb-4" />
-                    <label for="password1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Password</label>
-                    <InputText id="password1" v-model="password" type="password" placeholder="Password" class="w-full mb-4" />
+                <form @submit="onLogin">
+                    <div class="field">
+                        <label for="email1" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Email</label>
+                        <InputText id="email1" v-model="email" type="text" placeholder="Email address" 
+                        class="w-full"
+                        :class="{ 'p-invalid': errors.email }" />
+                        <Message v-if="errors.email"  size="small" severity="error" variant="simple">{{ errors.email }}</Message>
+                    </div>
+                    <div class="field mb-4">
+                        <label for="password" class="text-surface-900 dark:text-surface-0 font-medium mb-2 block">Password</label>
+                        <InputText id="password" v-model="password" type="password" placeholder="Password" 
+                        class="w-full"
+                        :class="{ 'p-invalid': errors.password }" />
+                        <Message v-if="errors.password"  size="small" severity="error" variant="simple">{{errors.password}}</Message>
+                    </div>
                     <div class="flex items-center justify-between mb-12">
                         <div class="flex items-center">
                             <Checkbox id="rememberme1" v-model="rememberMe" :binary="true" class="mr-2" />

@@ -15,13 +15,12 @@ export const useAuthStore = defineStore({
         async login(creds) {
             try{
                 const response = await axios.post(`${baseUrl}/login`, creds);
-                console.log(response);
                 this.user = response.data.data.user;
                 localStorage.setItem('authToken', response.data.data.token);
                 this.token = response.data.data.token;
-                router.push('/');
+                return response;
             }catch(e){
-                console.log(e);
+                return e.response;
             }
         },
         async syncCurrentUser(){
@@ -31,18 +30,16 @@ export const useAuthStore = defineStore({
                 if(!response.data.data.user){
                     this.token = null;
                     localStorage.setItem('authToken', null);
-                    router.push('/login');
                 }
                 this.user = response.data.data.user;
             }catch(e){
-                console.log(e);
+                return e.response;
             }
         },
         logout() {
             this.user = undefined;
             this.token = null;
             localStorage.removeItem('authToken');
-            router.push('/login');
         }
     }
 });

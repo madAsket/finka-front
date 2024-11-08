@@ -115,6 +115,18 @@ async function getCurrentUser(){
   await auth.syncCurrentUser();
 }
 
+const checkRouteMeta = (to, from, next, auth)=>{
+  if(to.meta.authNotRequired) {
+    if(to.meta.onlyUnathorized && auth.user){
+        return next("/");
+      }
+    return next();
+  }
+  if(!auth.user){
+    return next("/login");
+  }
+  return next();
+}
 
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
@@ -122,24 +134,13 @@ router.beforeEach(async (to, from, next) => {
   if(!auth.user && auth.token) {
       try {
         await getCurrentUser();
-        return next();
+        return checkRouteMeta(to, from, next, auth);
       }catch(e){
         next("/login");
       }
     // User is not authenticated, redirect to login
   }else{
-    if(to.meta.authNotRequired) {
-      if(to.meta.onlyUnathorized && auth.user){
-          return next("/");
-        }
-      return next();
-    } else {
-      if(!auth.user){
-        next("/login");
-      }else{
-        next();
-      }
-    }
+      checkRouteMeta(to, from, next, auth);
   }
 });
 
