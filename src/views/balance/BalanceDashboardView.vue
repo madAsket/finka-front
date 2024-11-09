@@ -6,41 +6,31 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import Toolbar from "primevue/toolbar"
+import {useProjectStore} from "@/stores/project"
+import BalanceService from "@/services/BalanceService"
 import AddStorageModalView from "@/views/balance/AddStorageModalView.vue"
 
-const balance = ref([
-{
-        id:1,
-        origin_balance: 200,
-        balance: 200,
-        currency:"EUR",
-        label:"Bunq"
-    },
-    {
-        id:1,
-        origin_balance: 5000,
-        balance: 5000,
-        currency:"EUR",
-        label:"Счет в банке X"
-    },
-    {
-        id:1,
-        origin_balance: 0.2,
-        balance: 4000,
-        currency:"BTC",
-        label:"Счет BTC Binance"
-    },
-])
+const storages = ref([])
+const projectStore = useProjectStore()
 
 const isAddStorageModalShown = ref(false);
 function showAddStorageModal(){
     isAddStorageModalShown.value = true;
 }
 
+const addStorage = (newStorage) => {
+    console.log(newStorage);
+    isAddStorageModalShown.value = false;
+    storages.value.push(newStorage);
+};
 
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
+const formatCurrency = (value, currency) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(value);
 }
+
+onMounted(async () => {
+    storages.value = await BalanceService.getAllStorages(projectStore.currentProject.Project.id);
+});
 
 </script>
 <template>
@@ -48,11 +38,11 @@ const formatCurrency = (value) => {
 <div>
     <div class="mb-5">
         <h1 class="text-surface-700  font-bold text-2xl">Financial storage</h1>
-        <p class="text-xs"><b>Project:</b> Family budgeting.</p>
+        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
     </div>
     <div>
         <Button @click="showAddStorageModal"  class="mr-2 mb-5" icon="pi pi-plus" label="Add storage"  size="small" />
-        <AddStorageModalView v-model:visible="isAddStorageModalShown"/>
+        <AddStorageModalView v-model:visible="isAddStorageModalShown" @add-storage="addStorage"/>
         <!-- <Toolbar class="inline-flex justify-content-start p-1 max-w-xl" :pt="{
             center:{class:'hidden'},
             end:{class:'hidden'}}">
@@ -65,18 +55,18 @@ const formatCurrency = (value) => {
         <!-- TODO: Currencies exchange information -->
     </div>
     <div>
-        <DataTable :value="balance" stripedRows  class="text-xs" tableStyle="max-width: 50rem">
-            <Column field="label" header="Storage" class="max-w-40"></Column>
+        <DataTable v-if="storages.length" :value="storages" stripedRows  class="text-xs" tableStyle="max-width: 50rem">
+            <Column field="name" header="Storage" class="max-w-40"></Column>
             <Column field="currency" header="Currency" class="max-w-40"></Column>
             <Column field="balance" header="Balance (EUR)" >
                 <template #body="{ data }">
-                    <b>{{ formatCurrency(data.balance) }}</b>
+                    <b> TODO: {{data.balance}} EUR</b>
+                    <!-- {{ formatCurrency(data.balance, data.currency) }} -->
                 </template>
             </Column>            
             <Column field="origin_balance" header="Origin balance" class="max-w-40">
                 <template #body="{ data }">
-                    <b v-if="data.currency !== 'EUR'">{{ data.origin_balance }} {{ data.currency }}</b>
-                    <b v-else>{{ formatCurrency(data.balance) }}</b>
+                    <b v-if="data.currency !== projectStore.currentProject.Project.currency">{{ formatCurrency(data.balance, data.currency) }}</b>
                 </template>
             </Column>
             <Column header="Actions">

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
-import router from '@/router/index';
 
-const baseUrl = `${import.meta.env.VITE_API_URL}/auth`;
+import {useProjectStore} from "./project"
+import AuthService from '@/services/AuthService';
+
 
 export const useAuthStore = defineStore({
     id: 'auth',
@@ -13,28 +13,25 @@ export const useAuthStore = defineStore({
     }),
     actions: {
         async login(creds) {
-            try{
-                const response = await axios.post(`${baseUrl}/login`, creds);
-                this.user = response.data.data.user;
-                localStorage.setItem('authToken', response.data.data.token);
-                this.token = response.data.data.token;
-                return response;
-            }catch(e){
-                return e.response;
+            const data = await AuthService.login(creds);
+            if(data.user){
+                this.user = data.user;
+                localStorage.setItem('authToken', data.token);
+                this.token = data.token;
+                const projectStore = useProjectStore()
+                projectStore.setCurrentProject(data.currentProject);    
             }
+            return data;
         },
         async syncCurrentUser(){
-            try{
-                const response = await axios.get(`${baseUrl}/current`);
-                this.user = response.data.data.user;
-                if(!response.data.data.user){
-                    this.token = null;
-                    localStorage.setItem('authToken', null);
-                }
-                this.user = response.data.data.user;
-            }catch(e){
-                return e.response;
+            const data = await AuthService.syncCurrentUser();
+            this.user = data.user;
+            if(!data.user){
+                this.token = null;
+                localStorage.setItem('authToken', null);
             }
+            const projectStore = useProjectStore()
+            projectStore.setCurrentProject(data.currentProject);
         },
         logout() {
             this.user = undefined;

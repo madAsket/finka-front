@@ -5,23 +5,14 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import {useProjectStore} from "@/stores/project"
+import {useAuthStore} from "@/stores/auth"
 
 const router = useRouter();
-
-const projects = ref([
-    {
-        id: '1000',
-        current:true,
-        currency:"EUR",
-        name:"Family budgeting.",
-    },
-    {
-        id: '1000',
-        currency:"USD",
-        name:"Trips.",
-    },
-])
-onMounted(() => {
+const projectStore = useProjectStore();
+const projects = ref([])
+onMounted(async () => {
+    projects.value = await projectStore.getUserProjects();
 });
 
 </script>
@@ -32,12 +23,12 @@ onMounted(() => {
     </div>
     <div>
         <DataTable :value="projects" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
-            <Column field="name" header="Name" class="max-w-40 font-bold"></Column>
-            <Column field="currency" header="Main currency" class="max-w-40 font-bold"></Column>
+            <Column field="Project.name" header="Name" class="max-w-40 font-bold"></Column>
+            <Column field="Project.currency" header="Main currency" class="max-w-40 font-bold"></Column>
             <Column header="Status">
                 <template #body="{ data }">
                     <div class="flex gap-2">
-                        <Button v-if="!data.current" label="Set as current" size="small" severity="success" outlined rounded />
+                        <Button v-if="!data.isCurrent" label="Set as current" size="small" severity="success" outlined rounded />
                         <Chip v-else label="Current project" :pt="{'chip':{background:'#000000'}}" 
                         class="border font-medium bg-transparent text-red-500 border-solid border-red-500" />
                     </div>
@@ -47,7 +38,6 @@ onMounted(() => {
                 <template #body="{ data }">
                     <div class="flex gap-2">
                         <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
-                    
                     </div>
                 </template>
             </Column>

@@ -24,11 +24,12 @@ const [password] = defineField('password');
 
 const onLogin = handleSubmit(async (values) => {
     const auth = useAuthStore();
-    const response = await auth.login(values);
-    if(response?.data?.status === "success"){
+    const data = await auth.login(values);
+    console.log(data);
+    if(data.status === "success"){
         router.push("/");
     }else{
-        let errors = response.data.fieldErrors;
+        let errors = data.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{

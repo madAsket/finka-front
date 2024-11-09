@@ -5,8 +5,10 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import {useProjectStore} from "@/stores/project"
 
 const router = useRouter();
+const projectStore = useProjectStore()
 
 const expenses = ref([
         {
@@ -83,7 +85,7 @@ const formatCurrency = (value) => {
 <div>
     <div class="mb-5">
         <h1 class="text-surface-700  font-bold text-2xl">Current month expenses</h1>
-        <p class="text-xs"><b>Project:</b> Family budgeting.</p>
+        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
     </div>
     <div>
         <DataTable :value="expenses" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
