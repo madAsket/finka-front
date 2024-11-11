@@ -6,33 +6,22 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import AddDepositModalView from './AddDepositModalView.vue';
+import BalanceService from "@/services/BalanceService"
+import {useProjectStore} from "@/stores/project"
 
 const router = useRouter();
+const projectStore = useProjectStore()
 
-const deposits = ref([
-        {
-            id: '1000',
-            deposit_date:"11/12/2024",
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            amount: 200,
-            target_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            },
-            tags:["Зарплата","Карта"]
-        },
-])
-onMounted(() => {
+const deposits = ref([])
+onMounted(async () => {
+    deposits.value = await BalanceService.getAllDeposits(projectStore.currentProject.Project.id);
 });
-
 
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
+}
+const formatDate = (date) =>{
+    return new Intl.DateTimeFormat('en-EN').format(date);
 }
 
 const isAddDepositModalShown = ref(false);
@@ -58,21 +47,25 @@ function showDepositModal(){
                     <b>{{ formatCurrency(data.amount) }}</b>
                 </template>
             </Column>
-            <Column field="deposit_date" header="Date"></Column>
-            <Column field="author" header="Author">
+            <Column field="depositedAt" header="Date">
                 <template #body="{ data }">
-                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.author.username" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                    <b>{{ formatDate(data.date) }}</b>
                 </template>
             </Column>
-            <Column field="target_storage.label" header="Storage"></Column>
-            <Column field="target_storage.currency" header="Origin currency"></Column>
-            <Column field="tags" header="Tags" class="max-w-40">
+            <Column field="User" header="Author">
+                <template #body="{ data }">
+                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.User.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                </template>
+            </Column>
+            <Column field="Storage.name" header="Storage"></Column>
+            <Column field="Storage.currency" header="Origin currency"></Column>
+            <!-- <Column field="tags" header="Tags" class="max-w-40">
                 <template #body="{ data }">
                     <div class="flex flex-wrap gap-1 justify-items-start">
                         <Chip v-for="tag in data.tags" :label="tag" class="py-1" />
                     </div>
                 </template>
-            </Column>
+            </Column> -->
             <Column header="Actions">
                 <template #body="{ data }">
                     <div class="flex gap-2">

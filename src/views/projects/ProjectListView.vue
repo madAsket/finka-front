@@ -25,6 +25,11 @@ onMounted(async () => {
         <DataTable :value="projects" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
             <Column field="Project.name" header="Name" class="max-w-40 font-bold"></Column>
             <Column field="Project.currency" header="Main currency" class="max-w-40 font-bold"></Column>
+            <Column header="Owner">
+                <template #body="{ data }">
+                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.Project.ownerUser.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                </template>
+            </Column>
             <Column header="Status">
                 <template #body="{ data }">
                     <div class="flex gap-2">

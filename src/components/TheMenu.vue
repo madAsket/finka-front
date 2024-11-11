@@ -51,7 +51,7 @@ const items = ref([
                         </span>
                     </template>
                     <template #item="{ item, props }">
-                        <router-link class="flex items-center" v-slot="{ href, navigate }" :to="item.route" custom>
+                        <router-link  v-slot="{ href, navigate }" :to="item.route" custom>
                             <a :href="href" v-bind="props.action" @click="navigate">
                                 <span :class="item.icon" />
                             </a>

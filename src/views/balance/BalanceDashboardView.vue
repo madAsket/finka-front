@@ -64,7 +64,7 @@ onMounted(async () => {
                     <!-- {{ formatCurrency(data.balance, data.currency) }} -->
                 </template>
             </Column>            
-            <Column field="origin_balance" header="Origin balance" class="max-w-40">
+            <Column  header="Origin balance" class="max-w-40">
                 <template #body="{ data }">
                     <b v-if="data.currency !== projectStore.currentProject.Project.currency">{{ formatCurrency(data.balance, data.currency) }}</b>
                 </template>
