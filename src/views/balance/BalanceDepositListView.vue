@@ -20,9 +20,18 @@ onMounted(async () => {
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
 }
-const formatDate = (date) =>{
-    return new Intl.DateTimeFormat('en-EN').format(date);
+const formatDate = (dateString) =>{
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-GB',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
 }
+
+const addDeposit = (newDeposit) => {
+    isAddDepositModalShown.value = false;
+    deposits.value.push(newDeposit);
+    deposits.value.sort((a,b)=>{
+        return new Date(b.depositedAt) - new Date(a.depositedAt);
+    })
+};
 
 const isAddDepositModalShown = ref(false);
 function showDepositModal(){
@@ -39,7 +48,7 @@ function showDepositModal(){
     <div>
         <Button @click="showDepositModal" class="mr-2 mb-5" icon="pi pi-credit-card" label="Top up"  size="small" />
     </div>
-    <AddDepositModalView v-model:visible="isAddDepositModalShown"/>
+    <AddDepositModalView v-model:visible="isAddDepositModalShown" @add-deposit="addDeposit"/>
     <div>
         <DataTable :value="deposits" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
             <Column field="amount" header="Amount" >
@@ -49,7 +58,7 @@ function showDepositModal(){
             </Column>
             <Column field="depositedAt" header="Date">
                 <template #body="{ data }">
-                    <b>{{ formatDate(data.date) }}</b>
+                    <b>{{ formatDate(data.depositedAt) }}</b>
                 </template>
             </Column>
             <Column field="User" header="Author">

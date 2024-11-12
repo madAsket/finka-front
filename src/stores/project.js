@@ -13,6 +13,9 @@ export const useProjectStore = defineStore({
         async getUserProjects(){
             const response = await ProjectService.getUserProjects();
             return response;
+        },
+        async getProjectUsers(projectId){
+            return await ProjectService.getProjectUsers(projectId);
         }
     }
 });

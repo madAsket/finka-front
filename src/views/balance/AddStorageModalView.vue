@@ -1,14 +1,11 @@
 <script setup>
 import Dialog from 'primevue/dialog';
-import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Message from 'primevue/message';
 import Select from 'primevue/select'
 import InputNumber from 'primevue/inputnumber'
-import { ref, onMounted } from 'vue';
-import DatePicker from 'primevue/datepicker'
-import Chip from 'primevue/chip'
+import { ref, onUpdated } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import BalanceService from "@/services/BalanceService"
@@ -41,7 +38,10 @@ const [name] = defineField('name');
 const [currency] = defineField('currency');
 const [balance] = defineField('balance');
 
-setValues({ currency: {label:"USD",value:"USD"}});
+onUpdated(()=>{
+    resetForm();
+    setValues({ currency: {label:"USD",value:"USD"}});
+})
 
 const onAddStorage = handleSubmit(async (values) => {
     const result = await BalanceService.addStorage(projectStore.currentProject.Project.id, values);

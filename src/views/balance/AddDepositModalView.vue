@@ -1,145 +1,149 @@
 <script setup>
 import Dialog from 'primevue/dialog';
-import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
 import Select from 'primevue/select'
 import MultiSelect from "primevue/multiselect"
+import Message from 'primevue/message';
 import InputNumber from 'primevue/inputnumber'
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUpdated } from 'vue';
 import DatePicker from 'primevue/datepicker'
 import Chip from 'primevue/chip'
+import { useForm } from 'vee-validate';
+import * as yup from 'yup';
+import {useProjectStore} from "@/stores/project"
+import {useAuthStore} from "@/stores/auth"
+import BalanceService from "@/services/BalanceService"
 
+const emit = defineEmits(['add-deposit'])
 const visible = defineModel('visible')
-const amount = ref();
-const storage = ref({label:"Bunq", value:1, currency:"EUR"});
-const selectedTags = ref();
-const date = ref();
+const authStore = useAuthStore();
+const projectStore = useProjectStore();
 
-const tags = ref([
-    {
-        color:"orange",
-        id:'3',
-        label:'Зарплата',
-    },
-    {
-        color:"orange",
-        id:'2',
-        label:'Карта',
-    },
-    {
-        color:"orange",
-        id:'1',
-        label:'Крипта',
-    },
-    {
-        color:"orange",
-        id:'1',
-        label:'Кэш',
-    }
-])
+const schema = yup.object({
+  storage: yup.number().required().label('Storage'),
+  depositedAt: yup.date().required().label('Desposit date'),
+  author: yup.number().required().label('Author'),
+  amount: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Amount'),
+}).noUnknown(true);
 
-const storages = ref([
-{
-        id:1,
-        origin_balance: 200,
-        balance: 200,
-        currency:"EUR",
-        label:"Bunq"
-    },
-    {
-        id:2,
-        origin_balance: 5000,
-        balance: 5000,
-        currency:"EUR",
-        label:"Счет в банке X"
-    },
-    {
-        id:3,
-        origin_balance: 0.2,
-        balance: 4000,
-        currency:"BTC",
-        label:"Счет BTC Binance"
-    },
-]);
-const author = ref(
-    {
-        id: '1000',
-        username:"Денис",
-        is_owner:true,
-        avatar:"https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png",
-        email:"kexbit@gmail.com"
+const { defineField, handleSubmit,setErrors, setValues, resetForm,errors } = useForm({
+  validationSchema: schema,
+});
+
+
+const onAddDeposit = handleSubmit(async (values) => {
+    const result = await BalanceService.addDeposit(projectStore.currentProject.projectId, values);
+    if(result.status === "success"){
+        emit('add-deposit', result);
+    }else{
+        let errors = result.fieldErrors;
+        if(errors){
+            setErrors(errors);
+        }else{
+            alert("ERROR");
+        }
     }
-);
-const users = ref([
-    {
-        id: '1000',
-        username:"Денис",
-        is_owner:true,
-        avatar:"https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png",
-        email:"kexbit@gmail.com"
-    },
-    {
-        id: '1005',
-        username:"Дарья",
-        is_owner:false,
-        avatar:"https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png",
-        email:"dasha@gmail.com"
-    },
-])
+});
+
+const [storage] = defineField('storage');
+const [depositedAt] = defineField('depositedAt');
+const [author] = defineField('author');
+const [amount] = defineField('amount');
+
+onUpdated(()=>{
+    resetForm();
+    setValues({ author: authStore.user.id, depositedAt:new Date()});
+})
+onMounted(async()=>{
+    users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
+    storages.value = await BalanceService.getAllStorages(projectStore.currentProject.projectId);
+});
+
+
+// const selectedTags = ref();
+
+
+// const tags = ref([
+//     {
+//         color:"orange",
+//         id:'3',
+//         label:'Зарплата',
+//     },
+//     {
+//         color:"orange",
+//         id:'2',
+//         label:'Карта',
+//     },
+//     {
+//         color:"orange",
+//         id:'1',
+//         label:'Крипта',
+//     },
+//     {
+//         color:"orange",
+//         id:'1',
+//         label:'Кэш',
+//     }
+// ])
+
+const storages = ref([]);
+const users = ref([])
 
 
 </script>
 <template>
     <Dialog v-model:visible="visible" modal header="Top up" :style="{ width: '25rem' }">
-        <div class="mb-4 flex flex-col gap-y-5">
-            <div class="">
-                <Select name="storage" v-model="storage" :options="storages" :highlightOnSelect="false" optionLabel="label" placeholder="Select a Storage" fluid>
-                    <template #value="slotProps">
-                        <div v-if="slotProps.value" class="flex items-center">
-                            <div>{{ slotProps.value.label }} (<span class="font-medium">{{ slotProps.value.currency }}</span>)</div>
-                        </div>
-                        <span v-else>
-                            {{ slotProps.placeholder }}
-                        </span>
-                    </template>
-                    <template #option="slotProps">
-                        <div class="max-w-36">
-                            <div>{{ slotProps.option.label }} (<span class="font-medium">{{ slotProps.option.currency }}</span>)</div>
-                        </div>
-                    </template>
-                </Select>
+        <form @submit="onAddDeposit">
+            <div class="mb-4 flex flex-col gap-y-5">
+                <div class="field">
+                    <Select name="storage" v-model="storage" :options="storages" :highlightOnSelect="false" 
+                    optionLabel="name" optionValue="id" placeholder="Select a Storage" fluid
+                    :class="{ 'p-invalid': errors.storage }" >
+                    </Select>
+                    <Message v-if="errors.storage"  size="small" severity="error" variant="simple">{{ errors.storage }}</Message>
+                </div>
+                <div class="field">
+                    <InputNumber v-model="amount" autocomplete="off" placeholder="Amount" 
+                    inputId="amount" mode="currency" currency="EUR" locale="de-DE" fluid
+                    :class="{ 'p-invalid': errors.amount }"  />
+                    <Message v-if="errors.amount"  size="small" severity="error" variant="simple">{{ errors.amount }}</Message>
+                </div>
+                <!-- <div class="">
+                    <MultiSelect v-model="selectedTags" display="chip" :options="tags" optionLabel="label" placeholder="Tags"
+                        :maxSelectedLabels="3" fluid />
+                </div> -->
+                <div class="grid gap-2 grid-cols-2">
+                    <div class="field">
+                        <DatePicker v-model="depositedAt" showIcon fluid iconDisplay="input" placeholder="Deposit date" dateFormat="dd.mm.yy"
+                        :class="{ 'p-invalid': errors.depositedAt }" />
+                        <Message v-if="errors.depositedAt"  size="small" severity="error" variant="simple">{{ errors.depositedAt }}</Message>
+                    </div>
+                    <div class="field">
+                        <Select  name="author" v-model="author" :options="users" :highlightOnSelect="false" 
+                        optionLabel="firstName" optionValue="id" fluid
+                        :class="{ 'p-invalid': errors.author }" >
+                            <!-- <template #value="slotProps">
+                                <div v-if="slotProps.value">
+                                    <Chip size="small" small :pt="{image:{width:'20px',heigth:'20px;'}}" :label="slotProps.value.firstName" :image="slotProps.value.avatar" />
+                                </div>
+                                <span v-else>
+                                    {{ slotProps.placeholder }}
+                                </span>
+                            </template>
+                            <template #option="slotProps">
+                                <div class="max-w-36">
+                                    <Chip size="small" :pt="{image:{style:'width:20px;height:20px'}}" :label="slotProps.option.firstName" :image="slotProps.option.avatar" />
+                                </div>
+                            </template> -->
+                        </Select>
+                        <Message v-if="errors.author"  size="small" severity="error" variant="simple">{{ errors.author }}</Message>
+                    </div>
+                </div>
             </div>
-            <div class="">
-                <InputNumber v-model="amount" autocomplete="off" placeholder="Amount" 
-                inputId="amount" mode="currency" currency="EUR" locale="de-DE" fluid />
+            <div class="flex justify-end">
+                <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
+                <Button label="Top up" type="submit" autofocus />
             </div>
-            <div class="">
-                <MultiSelect v-model="selectedTags" display="chip" :options="tags" optionLabel="label" placeholder="Tags"
-                    :maxSelectedLabels="3" fluid />
-            </div>
-            <div class="grid gap-2 grid-cols-2">
-                <DatePicker v-model="date" showIcon fluid iconDisplay="input" placeholder="Deposit date" dateFormat="dd.mm.yy"/>
-                <Select name="author" v-model="author" :options="users" :highlightOnSelect="false" optionLabel="username" fluid>
-                    <template #value="slotProps">
-                        <div v-if="slotProps.value">
-                            <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="slotProps.value.username" :image="slotProps.value.avatar" />
-                        </div>
-                        <span v-else>
-                            {{ slotProps.placeholder }}
-                        </span>
-                    </template>
-                    <template #option="slotProps">
-                        <div class="max-w-36">
-                            <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="slotProps.option.username" :image="slotProps.option.avatar" />
-                        </div>
-                    </template>
-                </Select>
-            </div>
-        </div>
-        <template #footer>
-            <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
-            <Button label="Add"  autofocus />
-        </template>
+        </form>
     </Dialog>    
 </template>
