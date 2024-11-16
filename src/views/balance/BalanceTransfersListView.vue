@@ -6,86 +6,37 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import TransferModalView from './TransferModalView.vue';
+import BalanceService from "@/services/BalanceService"
+import {useProjectStore} from "@/stores/project"
+
+const projectStore = useProjectStore()
 
 const router = useRouter();
 
-const deposits = ref([
-        {
-            id: '1000',
-            transfer_date:"11/12/2024",
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            from_source_amount: 200,
-            to_target_amount: 190,
-            source_storage: {
-                id:'3',
-                label:"Счет Binance USDT",
-                currency:"USDT"
-            },
-            target_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            }
-        },
-        {
-            id: '1000',
-            transfer_date:"12/12/2024",
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            from_source_amount: 200,
-            to_target_amount: 0.2,
-            source_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            },
-            target_storage: {
-                id:'3',
-                label:"Binance BTC",
-                currency:"BTC"
-            }
-        },
-        {
-            id: '1000',
-            transfer_date:"12/12/2024",
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            from_source_amount: 200,
-            to_target_amount: 200,
-            source_storage: {
-                id:'3',
-                label:"Caixa",
-                currency:"EUR"
-            },
-            target_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            }
-        },
-])
-onMounted(() => {
-});
+const transfers = ref([])
 
+onMounted(async () => {
+    transfers.value = await BalanceService.getAllTransfers(projectStore.currentProject.Project.id);
+});
 
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
+}
+
+const formatDate = (dateString) =>{
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-GB',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
 }
 
 const isTransferModalShown = ref(false);
 function showTransferModal(){
     isTransferModalShown.value = true;
 }
+
+const addTransfer = (transfer) => {
+    isTransferModalShown.value = false;
+    transfers.value.push(transfer);
+};
 
 </script>
 <template>
@@ -97,27 +48,31 @@ function showTransferModal(){
     <div>
         <Button @click="showTransferModal" class="mr-2 mb-5" icon="pi pi-arrow-right-arrow-left" label="Make transfer"  size="small" />
     </div>
-    <TransferModalView v-model:visible="isTransferModalShown"/>
+    <TransferModalView v-model:visible="isTransferModalShown" @add-transfer="addTransfer" />
     <div>
-        <DataTable :value="deposits" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
-            <Column field="transfer_date" header="Date"></Column>
-            <Column field="source_storage.label" header="From"></Column>
-            <Column field="currency_amount" header="Transferred" >
+        <DataTable :value="transfers" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
+            <Column field="transferredAt" header="Date">
                 <template #body="{ data }">
-                    <b v-if="data.source_storage.currency !== 'EUR'">{{ data.from_source_amount }} {{ data.source_storage.currency }}</b>
-                    <b v-else>{{ formatCurrency(data.from_source_amount) }}</b>
+                    <b>{{ formatDate(data.transferredAt) }}</b>
                 </template>
             </Column>
-            <Column field="target_storage.label" header="To"></Column>
-            <Column field="currency_amount" header="Recieved" >
+            <Column field="fromStorage.name" header="From"></Column>
+            <Column field="transferredAmount" header="Transferred" >
                 <template #body="{ data }">
-                    <b v-if="data.target_storage.currency !== 'EUR'">{{ data.to_target_amount }} {{ data.target_storage.currency }}</b>
-                    <b v-else>{{ formatCurrency(data.to_target_amount) }}</b>
+                    <b v-if="data.fromStorage.currency !== 'EUR'">{{ data.transferredAmount }} {{ data.fromStorage.currency }}</b>
+                    <b v-else>{{ formatCurrency(data.transferredAmount) }}</b>
                 </template>
             </Column>
-            <Column field="author" header="Author">
+            <Column field="toStorage.name" header="To"></Column>
+            <Column field="receivedAmount" header="Recieved" >
                 <template #body="{ data }">
-                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.author.username" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                    <b v-if="data.toStorage.currency !== 'EUR'">{{ data.receivedAmount }} {{ data.toStorage.currency }}</b>
+                    <b v-else>{{ formatCurrency(data.receivedAmount) }}</b>
+                </template>
+            </Column>
+            <Column field="transferrer" header="Author">
+                <template #body="{ data }">
+                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.User.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
                 </template>
             </Column>
         </DataTable>

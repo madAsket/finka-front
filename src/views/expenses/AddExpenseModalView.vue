@@ -80,15 +80,6 @@ onMounted(async()=>{
     categories.value = await BalanceService.getProjectCategories(projectStore.currentProject.projectId);
 });
 
-// watchEffect(()=>{
-//     if(storages.value.length > 0){
-//         console.log(storages.value[0].name);
-//         setValues({ 
-//             storage:{name:storages.value[0].name, id:storages.value[0].id}
-//         }) 
-//     }
-// });
-
 </script>
 <template>
     <Dialog v-model:visible="visible" modal header="Add Expense" :style="{ width: '25rem' }">

@@ -31,6 +31,12 @@ class BalanceService extends AbstractService {
     async getMonthsExpenses(projectId, date){//TODO: filter by month/year
         return await this.request('get', `/${projectId}/expenses`);
     }
+    async addTransfer(projectId, data){
+        return await this.request('post', `/${projectId}/transfers`, data);
+    }
+    async getAllTransfers(projectId){
+        return await this.request('get', `/${projectId}/transfers`);
+    }
 }
   
 export default new BalanceService(`${import.meta.env.VITE_API_URL}/projects`);

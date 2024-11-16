@@ -1,6 +1,5 @@
 <script setup>
 import Menu from 'primevue/menu';
-import { defineProps } from 'vue';
 import { ref } from 'vue'
 import Button from "primevue/button"
 import Avatar from "primevue/avatar"
