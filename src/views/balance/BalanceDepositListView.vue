@@ -28,6 +28,7 @@ const formatDate = (dateString) =>{
 const addDeposit = (newDeposit) => {
     isAddDepositModalShown.value = false;
     deposits.value.push(newDeposit);
+    //ERROR
     deposits.value.sort((a,b)=>{
         return new Date(b.depositedAt) - new Date(a.depositedAt);
     })

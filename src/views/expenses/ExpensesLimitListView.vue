@@ -6,99 +6,17 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import AddExpenseCategoryModalView from "@/views/expenses/AddExpenseCategoryModalView.vue"
+import BalanceService from "@/services/BalanceService"
+import {useProjectStore} from "@/stores/project"
 
-const limits = ref([
-    {
-        id:1,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"orange",
-            id:'3',
-            label:'Продукты',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"red",
-            id:'3',
-            label:'Такси/Транспорт',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"blue",
-            id:'3',
-            label:'Коммуналка/Сервисы',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"green",
-            id:'3',
-            label:'Уроки',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"grey",
-            id:'3',
-            label:'Школа',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"cyan",
-            id:'3',
-            label:'Праздники/Кафе',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"purple",
-            id:'3',
-            label:'Шоппинг',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"amber",
-            id:'3',
-            label:'Налоги/Релокация',
-        }
-    },
-    {
-        id:2,
-        amount: 300,
-        spent:150,
-        category: {
-            color:"lime",
-            id:'3',
-            label:'Медицина/Здоровье',
-        }
-    }
-])
+const projectStore = useProjectStore()
+const currentLimit = ref(1000);
+
+const limits = ref([]);
+
+onMounted(async () => {
+    limits.value = await BalanceService.getMonthsCategories(projectStore.currentProject.Project.id);
+});
 
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
@@ -113,28 +31,33 @@ function showAddExpenseCategoryModal(){
     isAddExpenseCategoryModalShown.value = true;
 }
 
+const addCategory = (newCategory) => {
+    isAddExpenseCategoryModalShown.value = false;
+    limits.value.push(newCategory);
+};
+
 </script>
 <template>
 
 <div>
     <div class="mb-5">
         <h1 class="text-surface-700  font-bold text-2xl">Current month limits</h1>
-        <p class="text-xs"><b>Project:</b> Family budgeting.</p>
+        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}.</p>
     </div>
     <div>
         <Button  class="mr-2 mb-5" @click="showAddExpenseCategoryModal" icon="pi pi-plus" label="Add category"  size="small" />
     </div>
-    <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown"/>
+    <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown" @add-category="addCategory" :currentLimit="currentLimit" />
     <div>
         <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="category.label" header="Category"  >
                 <template #body="{ data }">
-                    <Chip :label="data.category.label" :pt="{chip:{background:categoryColor(data.category.color)}}"></Chip>
+                    <Chip :label="data.name"></Chip>
                 </template>
             </Column>
             <Column field="amount" header="Spent / Amount" >
                 <template #body="{ data }">
-                    {{ formatCurrency(data.spent) }} / <b>{{ formatCurrency(data.amount) }}</b>
+                    {{ formatCurrency(data.limit.spent) }} / <b>{{ formatCurrency(data.limit.limit) }}</b>
                 </template>
             </Column>
             <Column header="Actions">

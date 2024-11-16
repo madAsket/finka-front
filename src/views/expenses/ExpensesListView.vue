@@ -5,79 +5,25 @@ import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
+import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
+import {useBalanceStore} from "@/stores/balance"
 
 const router = useRouter();
-const projectStore = useProjectStore()
+const projectStore = useProjectStore();
+const balanceStore = useBalanceStore();
 
-const expenses = ref([
-        {
-            id: '1000',
-            description: 'Континент пошел купил еды и всяких вкусняшек',
-            expense_date:"11/12/2024",
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            target_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            },
-            amount: 65,
-            category: {
-                id:'3',
-                label:'Продукты',
-            }
-        },
-        {
-            id: '1000',
-            description: 'Континент',
-            expense_date:"11/12/2024",
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            target_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            },
-            amount: 65,
-            category: {
-                id:'3',
-                label:'Такси/Транспорт',
-            }
-        },
-        {
-            id: '1000',
-            description: 'Континент',
-            expense_date:"11/12/2024",
-            target_storage: {
-                id:'3',
-                label:"Bunq",
-                currency:"EUR"
-            },
-            author: {
-                id:22,
-                username:"Денис",
-                avatar:""
-            },
-            amount: 65,
-            category: {
-                id:'3',
-                label:'Коммуналка/Услуги',
-            }
-        },
-])
-onMounted(() => {
+
+onMounted(async () => {
+    await balanceStore.loadExpenses(projectStore.currentProject.Project.id);
 });
-
 
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
+}
+const formatDate = (dateString) =>{
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-GB',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
 }
 
 </script>
@@ -88,23 +34,27 @@ const formatCurrency = (value) => {
         <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
     </div>
     <div>
-        <DataTable :value="expenses" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
+        <DataTable :value="balanceStore.sortedExpenses" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
             <Column field="description" header="Description" class="max-w-40"></Column>
             <Column field="category.label" header="Category"  >
                 <template #body="{ data }">
-                    <Chip :label="data.category.label" class=" bg-orange-100"></Chip>
+                    <Chip :label="data.ExpenseCategory.name" class=" bg-orange-100"></Chip>
                 </template>
             </Column>
-            <Column field="expense_date" header="Date" ></Column>
+            <Column field="expensedAt" header="Date">
+                <template #body="{ data }">
+                    {{ formatDate(data.expensedAt) }}
+                </template>
+            </Column>
             <Column field="amount" header="Amount" >
                 <template #body="{ data }">
                     <b>{{ formatCurrency(data.amount) }}</b>
                 </template>
             </Column>
-            <Column field="target_storage.label" header="From" ></Column>
-            <Column field="author" header="Author">
+            <Column field="Storage.name" header="From" ></Column>
+            <Column field="spender" header="Spent by">
                 <template #body="{ data }">
-                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.author.username" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.User.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
                 </template>
             </Column>
             <Column header="Actions">
