@@ -6,14 +6,14 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import AddDepositModalView from './AddDepositModalView.vue';
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
+import { useBalanceStore } from '@/stores/balance';
 
 const projectStore = useProjectStore()
 
 const deposits = ref([])
 onMounted(async () => {
-    deposits.value = await BalanceService.getAllDeposits(projectStore.currentProject.Project.id);
+    deposits.value = await useBalanceStore().getAllDeposits(projectStore.currentProject.Project.id);
 });
 
 

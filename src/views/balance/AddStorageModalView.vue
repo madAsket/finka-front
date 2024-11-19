@@ -8,11 +8,12 @@ import InputNumber from 'primevue/inputnumber'
 import { ref, onUpdated } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
+import { useBalanceStore } from '@/stores/balance';
 
 const emit = defineEmits(['add-storage'])
-const projectStore = useProjectStore()
+const projectStore = useProjectStore();
+const balanceStore = useBalanceStore();
 
 const visible = defineModel('visible')
 const currencies = ref([
@@ -44,7 +45,7 @@ onUpdated(()=>{
 })
 
 const onAddStorage = handleSubmit(async (values) => {
-    const result = await BalanceService.addStorage(projectStore.currentProject.Project.id, values);
+    const result = await balanceStore.addStorage(projectStore.currentProject.Project.id, values);
     emit('add-storage', result);
 });
 

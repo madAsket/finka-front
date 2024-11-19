@@ -12,11 +12,12 @@ import Fieldset from 'primevue/fieldset'
 import Divider from 'primevue/divider';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
+import { useBalanceStore } from '@/stores/balance';
 
 const emit = defineEmits(['add-category'])
 const projectStore = useProjectStore()
+const balanceStore = useBalanceStore()
 
 
 const props = defineProps({
@@ -44,7 +45,7 @@ onUpdated(()=>{
 })
 
 const onAddCategory = handleSubmit(async (values) => {
-    const result = await BalanceService.addExpenseCategory(projectStore.currentProject.Project.id, values);
+    const result = await balanceStore.addExpenseCategory(projectStore.currentProject.Project.id, values);
     emit('add-category', result);
 });
 

@@ -13,7 +13,6 @@ import Fieldset from 'primevue/fieldset'
 import Divider from 'primevue/divider';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
 import {useBalanceStore} from "@/stores/balance"
@@ -59,9 +58,8 @@ onUpdated(()=>{
 });
 
 const onAddExpense = handleSubmit(async (values) => {
-    const result = await BalanceService.addExpense(projectStore.currentProject.Project.id, values);
+    const result = await balanceStore.addExpense(projectStore.currentProject.Project.id, values);
     if(result.status === "success"){
-        balanceStore.addExpense(result);
         visible.value = false;
     }else{
         let errors = result.fieldErrors;
@@ -76,8 +74,8 @@ const onAddExpense = handleSubmit(async (values) => {
 
 onMounted(async()=>{
     users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
-    storages.value = await BalanceService.getNonEmptyStorages(projectStore.currentProject.projectId);
-    categories.value = await BalanceService.getProjectCategories(projectStore.currentProject.projectId);
+    storages.value = await balanceStore.getNonEmptyStorages(projectStore.currentProject.projectId);
+    categories.value = await balanceStore.getProjectCategories(projectStore.currentProject.projectId);
 });
 
 </script>

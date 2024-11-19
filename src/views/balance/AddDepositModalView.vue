@@ -12,12 +12,13 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
-import BalanceService from "@/services/BalanceService"
+import { useBalanceStore } from '@/stores/balance';
 
 const emit = defineEmits(['add-deposit'])
 const visible = defineModel('visible')
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
+const balanceStore = useBalanceStore();
 
 const schema = yup.object({
   storage: yup.number().required().label('Storage'),
@@ -32,7 +33,7 @@ const { defineField, handleSubmit,setErrors, setValues, resetForm,errors } = use
 
 
 const onAddDeposit = handleSubmit(async (values) => {
-    const result = await BalanceService.addDeposit(projectStore.currentProject.projectId, values);
+    const result = await balanceStore.addDeposit(projectStore.currentProject.projectId, values);
     if(result.status === "success"){
         emit('add-deposit', result);
     }else{
@@ -56,7 +57,7 @@ onUpdated(()=>{
 })
 onMounted(async()=>{
     users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
-    storages.value = await BalanceService.getAllStorages(projectStore.currentProject.projectId);
+    storages.value = await balanceStore.getAllStorages(projectStore.currentProject.projectId);
 });
 
 

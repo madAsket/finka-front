@@ -6,16 +6,17 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import AddExpenseCategoryModalView from "@/views/expenses/AddExpenseCategoryModalView.vue"
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
+import { useBalanceStore } from '@/stores/balance';
 
-const projectStore = useProjectStore()
+const projectStore = useProjectStore();
+const balanceStore = useBalanceStore();
 const currentLimit = ref(1000);
 
 const limits = ref([]);
 
 onMounted(async () => {
-    limits.value = await BalanceService.getMonthsCategories(projectStore.currentProject.Project.id);
+    limits.value = await balanceStore.getMonthsCategories(projectStore.currentProject.Project.id);
 });
 
 const formatCurrency = (value) => {

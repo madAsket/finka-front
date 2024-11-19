@@ -37,6 +37,9 @@ class BalanceService extends AbstractService {
     async getAllTransfers(projectId){
         return await this.request('get', `/${projectId}/transfers`);
     }
+    async syncBalance(projectId){
+        return await this.request('get', `/${projectId}/balance`);
+    }
 }
   
 export default new BalanceService(`${import.meta.env.VITE_API_URL}/projects`);

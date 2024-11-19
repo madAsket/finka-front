@@ -7,11 +7,12 @@ import Chip from "primevue/chip"
 import Button from "primevue/button"
 import Toolbar from "primevue/toolbar"
 import {useProjectStore} from "@/stores/project"
-import BalanceService from "@/services/BalanceService"
 import AddStorageModalView from "@/views/balance/AddStorageModalView.vue"
+import { useBalanceStore } from '@/stores/balance';
 
 const storages = ref([])
 const projectStore = useProjectStore()
+const balanceStore = useBalanceStore()
 
 const isAddStorageModalShown = ref(false);
 function showAddStorageModal(){
@@ -25,7 +26,7 @@ const addStorage = (newStorage) => {
 };
 
 onMounted(async () => {
-    storages.value = await BalanceService.getAllStorages(projectStore.currentProject.Project.id);
+    storages.value = await balanceStore.getAllStorages(projectStore.currentProject.Project.id);
 });
 
 </script>

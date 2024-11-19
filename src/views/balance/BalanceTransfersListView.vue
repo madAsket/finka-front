@@ -6,17 +6,18 @@ import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import TransferModalView from './TransferModalView.vue';
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
+import { useBalanceStore } from '@/stores/balance';
 
-const projectStore = useProjectStore()
+const projectStore = useProjectStore();
+const balanceStore = useBalanceStore();
 
 const router = useRouter();
 
 const transfers = ref([])
 
 onMounted(async () => {
-    transfers.value = await BalanceService.getAllTransfers(projectStore.currentProject.Project.id);
+    transfers.value = await balanceStore.getAllTransfers(projectStore.currentProject.Project.id);
 });
 
 const formatCurrency = (value) => {
