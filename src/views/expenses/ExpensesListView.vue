@@ -1,15 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
-import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
 import {useBalanceStore} from "@/stores/balance"
 
-const router = useRouter();
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
 
@@ -18,9 +15,8 @@ onMounted(async () => {
     await balanceStore.loadExpenses(projectStore.currentProject.Project.id);
 });
 
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
-}
+const baseCurrency = ref(projectStore.currentProject.Project.currency);
+
 const formatDate = (dateString) =>{
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-GB',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
@@ -48,7 +44,7 @@ const formatDate = (dateString) =>{
             </Column>
             <Column field="amount" header="Amount" >
                 <template #body="{ data }">
-                    <b>{{ formatCurrency(data.amount) }}</b>
+                    <b>{{ $convertCurrency(data.amount, data.Storage.currency, baseCurrency) }}</b>
                 </template>
             </Column>
             <Column field="Storage.name" header="From" ></Column>

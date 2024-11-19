@@ -9,7 +9,6 @@ import AddDepositModalView from './AddDepositModalView.vue';
 import BalanceService from "@/services/BalanceService"
 import {useProjectStore} from "@/stores/project"
 
-const router = useRouter();
 const projectStore = useProjectStore()
 
 const deposits = ref([])
@@ -17,9 +16,7 @@ onMounted(async () => {
     deposits.value = await BalanceService.getAllDeposits(projectStore.currentProject.Project.id);
 });
 
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
-}
+
 const formatDate = (dateString) =>{
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-GB',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
@@ -52,9 +49,14 @@ function showDepositModal(){
     <AddDepositModalView v-model:visible="isAddDepositModalShown" @add-deposit="addDeposit"/>
     <div>
         <DataTable :value="deposits" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
-            <Column field="amount" header="Amount" >
+            <Column field="amount" :header="`Amount (${projectStore.currentProject.Project.currency})`" >
                 <template #body="{ data }">
-                    <b>{{ formatCurrency(data.amount) }}</b>
+                    <b> {{$convertCurrency(data.amount, data.Storage.currency, projectStore.currentProject.Project.currency)}}</b>
+                </template>
+            </Column>            
+            <Column  header="Origin amount" class="max-w-40">
+                <template #body="{ data }">
+                    <b>{{ $formatCurrency(data.amount, data.Storage.currency) }}</b>
                 </template>
             </Column>
             <Column field="depositedAt" header="Date">

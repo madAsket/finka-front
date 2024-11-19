@@ -11,6 +11,7 @@ import Ripple from 'primevue/ripple';
 import App from './App.vue'
 import router from './router'
 import setInterceptors from "@/helpers/apiInterceptors"
+import currencyFormatter from './plugins/currencyFormatter'
 
 
 const app = createApp(App)
@@ -31,5 +32,6 @@ app.use(PrimeVue, {
         }
     }
 });
+app.use(currencyFormatter, {});
 app.directive('ripple', Ripple);
 app.mount('#app')

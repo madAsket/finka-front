@@ -24,10 +24,6 @@ const addStorage = (newStorage) => {
     storages.value.push(newStorage);
 };
 
-const formatCurrency = (value, currency) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(value);
-}
-
 onMounted(async () => {
     storages.value = await BalanceService.getAllStorages(projectStore.currentProject.Project.id);
 });
@@ -58,15 +54,14 @@ onMounted(async () => {
         <DataTable v-if="storages.length" :value="storages" stripedRows  class="text-xs" tableStyle="max-width: 50rem">
             <Column field="name" header="Storage" class="max-w-40"></Column>
             <Column field="currency" header="Currency" class="max-w-40"></Column>
-            <Column field="balance" header="Balance (EUR)" >
+            <Column field="balance" :header="`Balance (${projectStore.currentProject.Project.currency})`" >
                 <template #body="{ data }">
-                    <b> TODO: {{data.balance}} EUR</b>
-                    <!-- {{ formatCurrency(data.balance, data.currency) }} -->
+                    <b> {{$convertCurrency(data.balance, data.currency, projectStore.currentProject.Project.currency)}}</b>
                 </template>
             </Column>            
             <Column  header="Origin balance" class="max-w-40">
                 <template #body="{ data }">
-                    <b v-if="data.currency !== projectStore.currentProject.Project.currency">{{ formatCurrency(data.balance, data.currency) }}</b>
+                    <b>{{ $formatCurrency(data.balance, data.currency) }}</b>
                 </template>
             </Column>
             <Column header="Actions">

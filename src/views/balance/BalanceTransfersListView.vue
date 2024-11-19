@@ -59,15 +59,13 @@ const addTransfer = (transfer) => {
             <Column field="fromStorage.name" header="From"></Column>
             <Column field="transferredAmount" header="Transferred" >
                 <template #body="{ data }">
-                    <b v-if="data.fromStorage.currency !== 'EUR'">{{ data.transferredAmount }} {{ data.fromStorage.currency }}</b>
-                    <b v-else>{{ formatCurrency(data.transferredAmount) }}</b>
+                    <b>{{ $formatCurrency(data.transferredAmount, data.fromStorage.currency) }}</b>
                 </template>
             </Column>
             <Column field="toStorage.name" header="To"></Column>
             <Column field="receivedAmount" header="Recieved" >
                 <template #body="{ data }">
-                    <b v-if="data.toStorage.currency !== 'EUR'">{{ data.receivedAmount }} {{ data.toStorage.currency }}</b>
-                    <b v-else>{{ formatCurrency(data.receivedAmount) }}</b>
+                    <b>{{ $formatCurrency(data.receivedAmount, data.toStorage.currency) }}</b>
                 </template>
             </Column>
             <Column field="transferrer" header="Author">

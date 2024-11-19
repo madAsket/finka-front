@@ -55,9 +55,9 @@ const addCategory = (newCategory) => {
                     <Chip :label="data.name"></Chip>
                 </template>
             </Column>
-            <Column field="amount" header="Spent / Amount" >
+            <Column field="amount" header="Spent / Limit" >
                 <template #body="{ data }">
-                    {{ formatCurrency(data.limit.spent) }} / <b>{{ formatCurrency(data.limit.limit) }}</b>
+                    {{ $formatCurrency(data.spent, projectStore.currentProject.Project.currency) }} / <b>{{ $formatCurrency(data.limit.limit, projectStore.currentProject.Project.currency) }}</b>
                 </template>
             </Column>
             <Column header="Actions">

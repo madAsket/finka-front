@@ -20,6 +20,7 @@ export const useAuthStore = defineStore({
                 this.token = data.token;
                 const projectStore = useProjectStore()
                 projectStore.setCurrentProject(data.currentProject);    
+                projectStore.setCurrencyConfig(data.currency);    
             }
             return data;
         },
@@ -32,6 +33,7 @@ export const useAuthStore = defineStore({
             }
             const projectStore = useProjectStore()
             projectStore.setCurrentProject(data.currentProject);
+            projectStore.setCurrencyConfig(data.currency); 
         },
         logout() {
             this.user = undefined;
