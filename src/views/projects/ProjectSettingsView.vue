@@ -26,13 +26,13 @@ const tabItems = ref([
         <div class="mb-5 text-xs flex justify-start">
             <Tabs value="/">
                 <TabList>
-                    <Tab v-for="tab in tabItems" :key="tab.label" :value="tab.route" as="div">
-                        <router-link v-if="tab.route" v-slot="{ href, navigate }" :to="tab.route" custom>
-                        <a v-ripple :href="href" @click="navigate" class="flex items-center gap-2 text-inherit">
+                    <Tab v-for="tab in tabItems" :key="tab.label" :value="tab.route"  
+                    :to="tab.route" as="router-link"
+                    exactActiveClass="p-tab-active">
+                        <div class="flex items-center gap-2 text-inherit">
                             <i :class="tab.icon" />
                             <span>{{ tab.label }}</span>
-                        </a>
-                        </router-link>
+                        </div>
                     </Tab>
                 </TabList>
             </Tabs>

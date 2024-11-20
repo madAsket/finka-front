@@ -50,11 +50,9 @@ const items = ref([
                         </span>
                     </template>
                     <template #item="{ item, props }">
-                        <router-link  v-slot="{ href, navigate }" :to="item.route" custom>
-                            <a :href="href" v-bind="props.action" @click="navigate">
+                        <RouterLink  :to="item.route" class="p-menu-item-link">
                                 <span :class="item.icon" />
-                            </a>
-                        </router-link>
+                        </RouterLink>
                     </template>
                     <template #end>
                         <router-link to="/profile"  class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 dark:hover:bg-surface-100 rounded-none cursor-pointer transition-colors duration-200">
@@ -67,5 +65,13 @@ const items = ref([
     </div>
 </template>
 <style scoped>
-
+    .p-menu-item-link{
+        height:40px;
+        width:40px;
+    }
+    .router-link-active{
+        background-color: #f1f5f9;
+        border-radius:100%;
+        /* height:100%; */
+    }
 </style> 

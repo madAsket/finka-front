@@ -29,7 +29,7 @@ const fromStorage = ref();
 
 const schema = yup.object({
   amount: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Amount'),
-  description: yup.string().required().label('Name'),
+  description: yup.string().required().max(50).label('Description'),
   spender: yup.number().required().label('Spender'),
   storage: yup.number().required().label('Storage'),
   category: yup.number().required().label('Category'),

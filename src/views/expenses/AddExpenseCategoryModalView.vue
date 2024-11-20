@@ -23,7 +23,7 @@ const balanceStore = useBalanceStore()
 const visible = defineModel('visible');
 
 const schema = yup.object({
-  name: yup.string().required().label('Name'),
+  name: yup.string().max(30).required().label('Name'),
   limit: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Limit'),
 });
 
