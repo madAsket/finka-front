@@ -25,10 +25,10 @@ const balanceStore = useBalanceStore();
 const categories = ref([]);
 const storages = ref([]);
 const users = ref([]);
-const availableBalance = ref();
+const fromStorage = ref();
 
 const schema = yup.object({
-  amount: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Limit'),
+  amount: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Amount'),
   description: yup.string().required().label('Name'),
   spender: yup.number().required().label('Spender'),
   storage: yup.number().required().label('Storage'),
@@ -47,13 +47,24 @@ const [storage] = defineField('storage');
 const [spender] = defineField('spender');
 const [expensedAt] = defineField('expensedAt');
 
-onUpdated(()=>{
+onUpdated(async ()=>{
     resetForm();
+    if(visible.value){
+        users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
+        storages.value = await balanceStore.getNonEmptyStorages(projectStore.currentProject.projectId);
+        categories.value = await balanceStore.getProjectCategories(projectStore.currentProject.projectId);
+    }
     setValues({ 
         spender: authStore.user.id, 
         expensedAt:new Date(),
         storage:storages.value[0]?.id,
         category:categories.value[0]?.id,
+    }, false);
+});
+
+watch(storage, (newValue)=>{
+    fromStorage.value = storages.value.find((item)=>{
+        return item.id === newValue;
     });
 });
 
@@ -72,17 +83,11 @@ const onAddExpense = handleSubmit(async (values) => {
 
 });
 
-onMounted(async()=>{
-    users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
-    storages.value = await balanceStore.getNonEmptyStorages(projectStore.currentProject.projectId);
-    categories.value = await balanceStore.getProjectCategories(projectStore.currentProject.projectId);
-});
-
 </script>
 <template>
     <Dialog v-model:visible="visible" modal header="Add Expense" :style="{ width: '25rem' }">
         <form @submit="onAddExpense">
-            <div class="mb-4 flex flex-col gap-y-5">
+            <div class="mb-4 flex flex-col gap-y-4">
                 <div class="field">
                     <InputText type="text" v-model="description" placeholder="Description" fluid
                     :class="{ 'p-invalid': errors.description }"/>
@@ -95,20 +100,27 @@ onMounted(async()=>{
                     </Select>
                     <Message v-if="errors.category"  size="small" severity="error" variant="simple">{{ errors.category }}</Message>
                 </div>
-                <div class="field">
-                    <Select name="storage" v-model="storage" :options="storages" :highlightOnSelect="false" 
-                    optionLabel="name" optionValue="id" placeholder="Select storage" fluid
-                    :class="{ 'p-invalid': errors.storage }"  >
-                    </Select>
-                    <Message v-if="errors.storage"  size="small" severity="error" variant="simple">{{ errors.storage }}</Message>
+                <div class="grid grid-cols-2 gap-x-2">
+                    <div class="field">
+                        <Select name="storage" v-model="storage" :options="storages" :highlightOnSelect="false" 
+                        optionLabel="name" optionValue="id" placeholder="Select storage" fluid
+                        :class="{ 'p-invalid': errors.storage }"  >
+                        </Select>
+                        <Message v-if="errors.storage"  size="small" severity="error" variant="simple">{{ errors.storage }}</Message>
+                    </div>
+                    <!-- <h1 class="text-sm font-light uppercase">Available balance: <span class="font-extrabold">11</span></h1> -->
+                    <div class="field">
+                        <InputNumber v-model="amount" autocomplete="off" placeholder="Expense amount" 
+                        inputId="amount" v-bind="$currencyFieldProps(fromStorage?.currency)" fluid
+                        :class="{ 'p-invalid': errors.amount }" />
+                        <Message v-if="errors.amount"  size="small" severity="error" variant="simple">{{ errors.amount }}</Message>
+                    </div>
+                    <div v-if="fromStorage" class="col-span-2">
+                        <small>Available balance:</small>
+                        <h3>{{$formatCurrency(fromStorage.balance, fromStorage.currency)}}</h3>
+                    </div>
                 </div>
-                <!-- <h1 class="text-sm font-light uppercase">Available balance: <span class="font-extrabold">11</span></h1> -->
-                <div class="field">
-                    <InputNumber v-model="amount" autocomplete="off" placeholder="Expense amount" 
-                    inputId="amount" mode="currency" currency="EUR" locale="de-DE" fluid
-                    :class="{ 'p-invalid': errors.amount }" />
-                    <Message v-if="errors.amount"  size="small" severity="error" variant="simple">{{ errors.amount }}</Message>
-                </div>
+  
                 <div class="grid gap-2 grid-cols-2">
                     <div class="field">
                         <DatePicker v-model="expensedAt" showIcon fluid iconDisplay="input" placeholder="Expense date" dateFormat="dd.mm.yy"

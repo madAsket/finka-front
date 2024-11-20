@@ -56,7 +56,8 @@ const onAddTransfer = handleSubmit(async (values) => {
         }
     }
 });
-
+const fromStorageItem = ref();
+const toStorageItem = ref();
 const storages = ref([]);
 const fromStorages = ref([]);
 const toStorages = ref([]);
@@ -73,18 +74,34 @@ onMounted(async()=>{
     users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
     const results = await balanceStore.getAllStorages(projectStore.currentProject.projectId);
     storages.value = results;
-    fromStorages.value = results;
+    fromStorages.value = results.filter((item)=>{
+        return item.balance > 0;
+    });
     toStorages.value = results;
 });
 
+const fromCurrency = computed(()=>{
+    return fromStorageItem.value?.currency || projectStore.currentProject.Project.currency
+}); 
+
+const toCurrency = computed(()=>{
+    return toStorageItem.value?.currency || projectStore.currentProject.Project.currency
+}); 
+
 watch(fromStorage, (newValue)=>{
     toStorages.value = storages.value.filter((item)=>{
+        if(newValue === item.id){
+            fromStorageItem.value = item;
+        }
         return item.id !== newValue;
     });
 });
 
 watch(toStorage, (newValue)=>{
     fromStorages.value = storages.value.filter((item)=>{
+        if(newValue === item.id){
+            toStorageItem.value = item;
+        }
         return item.id !== newValue;
     });
 })
@@ -96,25 +113,29 @@ watch(toStorage, (newValue)=>{
             <div class="mb-4 flex flex-col gap-y-5">
                 <div>
                     <h1 class="text-lg">From storage</h1>
-                    <div class="mb-2">
-                        <div class="field">
+                    <div class="grid grid-cols-2 gap-1 mb-2">
+                        <div class="field w-50">
                             <Select name="fromStorage" v-model="fromStorage" :options="fromStorages" :highlightOnSelect="false" 
                             optionLabel="name" optionValue="id" placeholder="Select storage" fluid
                             :class="{ 'p-invalid': errors.fromStorage }"  >
                             </Select>
                             <Message v-if="errors.fromStorage"  size="small" severity="error" variant="simple">{{ errors.fromStorage }}</Message>
                         </div>
+                        <div class="field w-50">
+                            <InputNumber v-model="transferredAmount" autocomplete="off" placeholder="Amount to transfer" 
+                            inputId="transferredAmount" v-bind="$currencyFieldProps(fromCurrency)" fluid 
+                            :class="{ 'p-invalid': errors.transferredAmount }" />
+                            <Message v-if="errors.transferredAmount"  size="small" severity="error" variant="simple">{{ errors.transferredAmount }}</Message>
+                        </div>
                     </div>
-                    <div class="field">
-                        <InputNumber v-model="transferredAmount" autocomplete="off" placeholder="Amount to transfer" 
-                        inputId="transferredAmount" mode="currency" currency="EUR" locale="de-DE" fluid 
-                        :class="{ 'p-invalid': errors.transferredAmount }" />
-                        <Message v-if="errors.transferredAmount"  size="small" severity="error" variant="simple">{{ errors.transferredAmount }}</Message>
+                    <div v-if="fromStorageItem">
+                        <small>Available balance:</small>
+                        <h3>{{$formatCurrency(fromStorageItem.balance, fromStorageItem.currency)}}</h3>
                     </div>
                 </div>
                 <div>
                     <h1 class="text-lg">To storage</h1>
-                    <div class="mb-2">
+                    <div class="grid grid-cols-2 gap-1 mb-2">
                         <div class="field">
                             <Select name="toStorage" v-model="toStorage" :options="toStorages" :highlightOnSelect="false" 
                             optionLabel="name" optionValue="id" placeholder="Select storage" fluid
@@ -122,12 +143,16 @@ watch(toStorage, (newValue)=>{
                             </Select>
                             <Message v-if="errors.toStorage"  size="small" severity="error" variant="simple">{{ errors.toStorage }}</Message>
                         </div>
+                        <div class="field">
+                            <InputNumber v-model="receivedAmount" autocomplete="off" placeholder="Amount to receive" 
+                            inputId="receivedAmount" v-bind="$currencyFieldProps(toCurrency)"  fluid 
+                            :class="{ 'p-invalid': errors.receivedAmount }" />
+                            <Message v-if="errors.receivedAmount"  size="small" severity="error" variant="simple">{{ errors.receivedAmount }}</Message>
+                        </div>
                     </div>
-                    <div class="field">
-                        <InputNumber v-model="receivedAmount" autocomplete="off" placeholder="Amount to receive" 
-                        inputId="receivedAmount" mode="currency" currency="EUR" locale="de-DE" fluid 
-                        :class="{ 'p-invalid': errors.receivedAmount }" />
-                        <Message v-if="errors.receivedAmount"  size="small" severity="error" variant="simple">{{ errors.receivedAmount }}</Message>
+                    <div v-if="toStorageItem">
+                        <small>Updated balance:</small>
+                        <h3>{{$formatCurrency((Number(receivedAmount || 0) + Number(toStorageItem.balance)), toStorageItem.currency)}}</h3>
                     </div>
                 </div>
                 <div class="grid gap-2 grid-cols-2">

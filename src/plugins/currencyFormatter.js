@@ -1,5 +1,22 @@
 import {useProjectStore} from "@/stores/project"
 
+const currencyPolifyl = {
+    aliases:{
+        "USDT":"USD",
+        "USDC":"USD",
+        "BUSD":"USD",
+        "AVAX":"AVA",
+    },
+    invalid:{
+        "DOGE":"",
+        "SHIB":"",
+        "FLOW":"",
+        "EGLD":"",
+        "BTTC":"",
+        "ATOM":""
+    }
+};
+
 export default {
     install: (app, options) => {
         const projectStore = useProjectStore();
@@ -27,6 +44,23 @@ export default {
                 return `${currencySettings.symbol} ${new Intl.NumberFormat().format(valueToConvert)}`;
             }
             return valueToConvert;
+        }
+        app.config.globalProperties.$currencyFieldProps = (currency) => {
+            let props = {
+                maxFractionDigits:10,
+                minFractionDigits:2,
+            };
+            if(!currency){
+                return props;
+            }
+            if(currencyPolifyl.invalid.hasOwnProperty(currency)){
+                props.mode = "decimal",
+                props.prefix = `${currency} `;
+            }else{
+                props.mode = "currency";
+                props.currency = currencyPolifyl.aliases[currency] || currency;
+            }
+            return props;
         }
     }
   }

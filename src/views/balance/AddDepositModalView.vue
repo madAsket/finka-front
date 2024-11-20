@@ -5,7 +5,7 @@ import Select from 'primevue/select'
 import MultiSelect from "primevue/multiselect"
 import Message from 'primevue/message';
 import InputNumber from 'primevue/inputnumber'
-import { ref, onMounted, onUpdated } from 'vue';
+import { ref, onMounted, onUpdated, computed,watch } from 'vue';
 import DatePicker from 'primevue/datepicker'
 import Chip from 'primevue/chip'
 import { useForm } from 'vee-validate';
@@ -19,13 +19,16 @@ const visible = defineModel('visible')
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
+const storages = ref([]);
+const users = ref([])
+const currentCurrency = ref(projectStore.currentProject.Project.currency)
 
 const schema = yup.object({
   storage: yup.number().required().label('Storage'),
   depositedAt: yup.date().required().label('Desposit date'),
   author: yup.number().required().label('Author'),
   amount: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Amount'),
-}).noUnknown(true);
+});
 
 const { defineField, handleSubmit,setErrors, setValues, resetForm,errors } = useForm({
   validationSchema: schema,
@@ -53,7 +56,10 @@ const [amount] = defineField('amount');
 
 onUpdated(()=>{
     resetForm();
-    setValues({ author: authStore.user.id, depositedAt:new Date()});
+    setValues({ 
+        author: authStore.user.id, 
+        depositedAt:new Date(),
+        storage: storages.value[0]?.id}, false);
 })
 onMounted(async()=>{
     users.value = await projectStore.getProjectUsers(projectStore.currentProject.projectId);
@@ -61,6 +67,12 @@ onMounted(async()=>{
 });
 
 
+watch(storage, ()=>{
+    const st = storages.value.find((item)=>{
+        return item.id === storage.value;
+    });
+    if(st) currentCurrency.value = st.currency;
+})
 // const selectedTags = ref();
 
 
@@ -87,8 +99,6 @@ onMounted(async()=>{
 //     }
 // ])
 
-const storages = ref([]);
-const users = ref([])
 
 
 </script>
@@ -105,7 +115,7 @@ const users = ref([])
                 </div>
                 <div class="field">
                     <InputNumber v-model="amount" autocomplete="off" placeholder="Amount" 
-                    inputId="amount" mode="currency" currency="EUR" locale="de-DE" fluid
+                    inputId="amount" v-bind="$currencyFieldProps(currentCurrency)" fluid
                     :class="{ 'p-invalid': errors.amount }"  />
                     <Message v-if="errors.amount"  size="small" severity="error" variant="simple">{{ errors.amount }}</Message>
                 </div>

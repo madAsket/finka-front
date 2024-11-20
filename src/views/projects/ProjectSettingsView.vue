@@ -8,19 +8,14 @@ import TabList from "primevue/tablist"
 
 const tabItems = ref([
     {
-        label: 'Financial storage',
+        label: 'Projects',
         icon: 'pi pi-database',
-        route: '/balance'
+        route: '/projects'
     },
     {
-        label: 'Deposits',
+        label: "Project's users",
         icon: 'pi pi-credit-card',
-        route: '/balance/deposits'
-    },
-    {
-        label: 'Transfers',
-        icon: 'pi pi-arrow-right-arrow-left',
-        route: '/balance/transfers'
+        route: '/projects/1/users'
     },
 ])
 
@@ -33,10 +28,10 @@ const tabItems = ref([
                 <TabList>
                     <Tab v-for="tab in tabItems" :key="tab.label" :value="tab.route" as="div">
                         <router-link v-if="tab.route" v-slot="{ href, navigate }" :to="tab.route" custom>
-                            <a v-ripple :href="href" @click="navigate" class="flex items-center gap-2 text-inherit">
-                                <i :class="tab.icon" />
-                                <span>{{ tab.label }}</span>
-                            </a>
+                        <a v-ripple :href="href" @click="navigate" class="flex items-center gap-2 text-inherit">
+                            <i :class="tab.icon" />
+                            <span>{{ tab.label }}</span>
+                        </a>
                         </router-link>
                     </Tab>
                 </TabList>

@@ -1,20 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import ExpensesView from '@/views/expenses/ExpensesView.vue'
 import UserProfileView from '@/views/profile/UserProfileView.vue'
 import ProjectCurrencyListView from '@/views/projects/ProjectCurrencyListView.vue'
 import ProjectUserListView from '@/views/projects/ProjectUserListView.vue'
-import ProjectsSettingsView from '@/views/projects/ProjectsSettingsView.vue'
+import ProjectSettingsView from '@/views/projects/ProjectSettingsView.vue'
 import StatisticExpensesListView from '@/views/statistic/StatisticExpensesListView.vue'
 import StatisticDashboardView from '@/views/statistic/StatisticDashboardView.vue'
-import BalanceDepositListView from '@/views/balance/BalanceDepositListView.vue'
-import BalanceDashboardView from '@/views/balance/BalanceDashboardView.vue'
+import BalanceDepositListView from '@/views/balance/DepositListView.vue'
+import BalanceStorageListView from '@/views/balance/StorageListView.vue'
 import ExpensesLimitListView from '@/views/expenses/ExpensesLimitListView.vue'
-import ExpensesListView from '@/views/expenses/ExpensesListView.vue'
+import ExpenseListView from '@/views/expenses/ExpenseListView.vue'
 import BalanceView from '@/views/balance/BalanceView.vue'
-import BalanceTransfersListView from '@/views/balance/BalanceTransfersListView.vue'
+import BalanceTransferListView from '@/views/balance/TransferListView.vue'
 import ProjectListView from '@/views/projects/ProjectListView.vue'
-import LoginView from '@/views/LoginView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
 import { useAuthStore } from '@/stores/auth';
+import SignUpView from '@/views/auth/SignUpView.vue'
 
 
 const router = createRouter({
@@ -23,12 +24,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView, //DashboardView (Edit limits will be in modal)
+      component: ExpensesView, //DashboardView (Edit limits will be in modal)
       children:[
         {
           path:"",
           name:"expenses",
-          component:ExpensesListView
+          component:ExpenseListView
         },
         {
           path: '/limits',
@@ -46,6 +47,15 @@ const router = createRouter({
           onlyUnathorized:true
       }
     },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignUpView,
+      meta:{
+          authNotRequired:true,
+          onlyUnathorized:true
+      }
+    },
     { 
       path: '/balance',
       component: BalanceView, //list of current items of balance with CRUD feature, total amount with tabs for details
@@ -53,7 +63,7 @@ const router = createRouter({
         {
           path:"",
           name:"balance",
-          component:BalanceDashboardView
+          component:BalanceStorageListView
         },
         {
           path:"deposits",
@@ -63,7 +73,7 @@ const router = createRouter({
         {
           path:"transfers",
           name:"transfers",
-          component:BalanceTransfersListView //List of debits with CRUD feature;
+          component:BalanceTransferListView //List of debits with CRUD feature;
         },
       ]
     },
@@ -80,7 +90,7 @@ const router = createRouter({
     {
       path: '/projects',
       name: 'projectsettings',
-      component: ProjectsSettingsView, //list of projects;
+      component: ProjectSettingsView, //list of projects;
       children:[
         { 
           path: '',

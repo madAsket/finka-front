@@ -20,12 +20,6 @@ const projectStore = useProjectStore()
 const balanceStore = useBalanceStore()
 
 
-const props = defineProps({
-    currentLimit: {
-        type: [Number, 0],
-    }
-});
-
 const visible = defineModel('visible');
 
 const schema = yup.object({
@@ -52,12 +46,10 @@ const onAddCategory = handleSubmit(async (values) => {
 
 
 const currentNewMonthLimit = computed(() => {
-    console.log(props);
-    console.log(limit.value);
     if(limit.value > 0){
-        return props.currentLimit + limit.value;
+        return balanceStore.limit + limit.value;
     }else{
-        return props.currentLimit;
+        return balanceStore.limit;
     }
 })
 

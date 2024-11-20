@@ -11,7 +11,6 @@ import { useBalanceStore } from '@/stores/balance';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
-const currentLimit = ref(1000);
 
 const limits = ref([]);
 
@@ -48,7 +47,7 @@ const addCategory = (newCategory) => {
     <div>
         <Button  class="mr-2 mb-5" @click="showAddExpenseCategoryModal" icon="pi pi-plus" label="Add category"  size="small" />
     </div>
-    <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown" @add-category="addCategory" :currentLimit="currentLimit" />
+    <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown" @add-category="addCategory" />
     <div>
         <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="category.label" header="Category"  >
@@ -58,7 +57,7 @@ const addCategory = (newCategory) => {
             </Column>
             <Column field="amount" header="Spent / Limit" >
                 <template #body="{ data }">
-                    {{ $formatCurrency(data.spent, projectStore.currentProject.Project.currency) }} / <b>{{ $formatCurrency(data.limit.limit, projectStore.currentProject.Project.currency) }}</b>
+                    {{ $formatCurrency(data.spent || 0, projectStore.currentProject.Project.currency) }} / <b>{{ $formatCurrency(data.limit.limit, projectStore.currentProject.Project.currency) }}</b>
                 </template>
             </Column>
             <Column header="Actions">

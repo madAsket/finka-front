@@ -7,33 +7,37 @@ import AuthService from '@/services/AuthService';
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
-        // initialize state from local storage to enable user to stay logged in
         user: undefined,
         token:localStorage.getItem('authToken')
     }),
     actions: {
-        async login(creds) {
-            const data = await AuthService.login(creds);
-            if(data.user){
-                this.user = data.user;
-                localStorage.setItem('authToken', data.token);
-                this.token = data.token;
-                const projectStore = useProjectStore()
-                projectStore.setCurrentProject(data.currentProject);    
-                projectStore.setCurrencyConfig(data.currency);    
-            }
-            return data;
-        },
-        async syncCurrentUser(){
-            const data = await AuthService.syncCurrentUser();
+        updateUserState(data){
             this.user = data.user;
             if(!data.user){
                 this.token = null;
                 localStorage.setItem('authToken', null);
+            }else{
+                if(data.token){
+                    this.token = data.token;
+                    localStorage.setItem('authToken', data.token);
+                }
+                const projectStore = useProjectStore()
+                projectStore.setCurrentProject(data.currentProject);
+                projectStore.setCurrencyConfig(data.currency); 
             }
-            const projectStore = useProjectStore()
-            projectStore.setCurrentProject(data.currentProject);
-            projectStore.setCurrencyConfig(data.currency); 
+        },
+        async login(creds) {
+            const data = await AuthService.login(creds);
+            this.updateUserState(data);
+            return data;
+        },
+        async signUp(creds) {
+            const data = await AuthService.signUp(creds);
+            this.updateUserState(data);
+            return data;
+        },
+        async syncCurrentUser(){
+            this.updateUserState(await AuthService.syncCurrentUser());
         },
         logout() {
             this.user = undefined;

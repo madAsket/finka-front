@@ -8,6 +8,27 @@ export const useProjectStore = defineStore({
         currency:{},
         rates:{}
     }),
+    getters:{
+        getCurrentProjectOwnerId: (state)=>{
+            return state.currentProject.Project.owner;
+        },
+        isOwner(state){
+            return (userId) => state.getCurrentProjectOwnerId === userId;
+        },
+        getCurrencyList:(state)=>{
+            let currencyList = [];
+            console.log(state.currency);
+            let currencyTypes = Object.keys(state.currency);
+            for(const currencyType of currencyTypes){
+                currencyList.push({
+                    label:currencyType,
+                    items:Object.keys(state.currency[currencyType]).sort()
+                });
+            }
+            console.log(currencyList);
+            return currencyList;
+        }
+    },
     actions: {
         setCurrentProject(project) {
             this.currentProject = project;
