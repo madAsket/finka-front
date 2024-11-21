@@ -7,6 +7,12 @@ class ProjectService extends AbstractService {
     async getProjectUsers(projectId){
         return await this.request('get', `/${projectId}/users`);
     }
+    async addProject(data){
+        return await this.request('post', "/", data);
+    }
+    async switchCurrentProject(projectId){
+        return await this.request('post', `/${projectId}/switch`);
+    }
 }
   
 export default new ProjectService(`${import.meta.env.VITE_API_URL}/projects`);

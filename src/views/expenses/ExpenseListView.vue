@@ -21,12 +21,10 @@ const baseCurrency = ref(projectStore.currentProject.Project.currency);
         <h1 class="text-surface-700  font-bold text-2xl">Current month expenses</h1>
         <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
     </div>
-    <div>
-        <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-2xl">
-            <div v-for="item in balanceStore.sortedExpenses" :key="item.id">
-                <ExpenseItemView :expenseItem="item" :baseCurrency="baseCurrency"/>
-            </div>
-        </div>
+    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-2xl">
+        <ExpenseItemView v-for="item in balanceStore.sortedExpenses" :key="item.id"
+        :expenseItem="item" 
+        :baseCurrency="baseCurrency"/>
     </div>
 </div>
 </template>

@@ -7,10 +7,7 @@ import Select from 'primevue/select'
 import Message from 'primevue/message'
 import InputNumber from 'primevue/inputnumber'
 import DatePicker from 'primevue/datepicker'
-import Chip from 'primevue/chip'
-import { ref, onMounted, onUpdated, computed, watch, watchEffect } from 'vue';
-import Fieldset from 'primevue/fieldset'
-import Divider from 'primevue/divider';
+import { ref, onUpdated, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"

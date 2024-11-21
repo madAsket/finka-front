@@ -12,7 +12,7 @@
     }
 </script>
 <template>
-    <div class="flex items-center justify-start my-2">
+    <div class="flex items-center justify-start py-2">
         <div class="mr-2">
             <img src="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" width="40" height="40" 
             class="border p-0.5 rounded-full border-indigo-800">

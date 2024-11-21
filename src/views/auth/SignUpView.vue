@@ -36,7 +36,6 @@ onMounted(()=>{
 const onSignUp = handleSubmit(async (values) => {
 
     const data = await auth.signUp(values);
-    console.log(data);
     if(data.status === "success"){
         router.push("/");
     }else{

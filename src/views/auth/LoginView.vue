@@ -25,7 +25,6 @@ const [password] = defineField('password');
 const onLogin = handleSubmit(async (values) => {
     const auth = useAuthStore();
     const data = await auth.login(values);
-    console.log(data);
     if(data.status === "success"){
         router.push("/");
     }else{

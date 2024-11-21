@@ -20,7 +20,6 @@ function showAddStorageModal(){
 }
 
 const addStorage = (newStorage) => {
-    console.log(newStorage);
     isAddStorageModalShown.value = false;
     storages.value.push(newStorage);
 };

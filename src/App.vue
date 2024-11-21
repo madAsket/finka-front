@@ -14,13 +14,6 @@ function showAddExpenseModal(){
     isAddExpenseModalShown.value = true;
 }
 
-// onMounted(()=>{
-//     console.log("mounted");
-// })
-
-onUpdated(()=>{
-  console.log("UPD?");
-})
 </script>
 
 <template>

@@ -1,19 +1,44 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, onUpdated } from 'vue';
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
 import Chip from "primevue/chip"
 import Button from "primevue/button"
 import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
+import AddProjectModalView from './AddProjectModalView.vue';
+import ProjectItemView from './ProjectItemView.vue';
 
-const router = useRouter();
 const projectStore = useProjectStore();
+const authStore = useAuthStore();
 const projects = ref([])
 onMounted(async () => {
     projects.value = await projectStore.getUserProjects();
 });
+
+const isAddProjectModalShown = ref(false);
+function showAddProjectyModal(){
+    isAddProjectModalShown.value = true;
+}
+
+const addProject = (newProject) => {
+    isAddProjectModalShown.value = false;
+    if(newProject.isCurrent){
+        projects.value.forEach((item)=>{
+            item.isCurrent = false;
+        })
+    };
+    newProject.Project.ownerUser = authStore.user; //FIXME maybe cause problem?
+    projects.value.push(newProject);
+};
+
+
+const onSwitchProject = (project) => {
+    projects.value.forEach((item)=>{
+        if(item.Project.id !== project.Project.id)
+            item.isCurrent = false;
+    });
+};
 
 </script>
 <template>
@@ -22,31 +47,12 @@ onMounted(async () => {
         <h1 class="text-surface-700  font-bold text-2xl">Projects list</h1>
     </div>
     <div>
-        <DataTable :value="projects" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
-            <Column field="Project.name" header="Name" class="max-w-40 font-bold"></Column>
-            <Column field="Project.currency" header="Main currency" class="max-w-40 font-bold"></Column>
-            <Column header="Owner">
-                <template #body="{ data }">
-                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.Project.ownerUser.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
-                </template>
-            </Column>
-            <Column header="Status">
-                <template #body="{ data }">
-                    <div class="flex gap-2">
-                        <Button v-if="!data.isCurrent" label="Set as current" size="small" severity="success" outlined rounded />
-                        <Chip v-else label="Current project" :pt="{'chip':{background:'#000000'}}" 
-                        class="border font-medium bg-transparent text-red-500 border-solid border-red-500" />
-                    </div>
-                </template>
-            </Column>
-            <Column header="Actions">
-                <template #body="{ data }">
-                    <div class="flex gap-2">
-                        <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
-                    </div>
-                </template>
-            </Column>
-        </DataTable>
+        <Button  class="mr-2 mb-5" @click="showAddProjectyModal" icon="pi pi-plus" label="Add project"  size="small" />
+    </div>
+    <AddProjectModalView v-model:visible="isAddProjectModalShown" @add-project="addProject" />
+
+    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-96">
+        <ProjectItemView @switchProject="onSwitchProject" :project="item" v-for="item in projects" :key="item.Project.id" />
     </div>
 </div>
 </template>

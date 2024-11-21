@@ -3,48 +3,57 @@ import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Message from 'primevue/message';
+import Checkbox from 'primevue/checkbox';
 import Select from 'primevue/select'
-import InputNumber from 'primevue/inputnumber'
-import { ref, onUpdated, onMounted } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
+import { ref, onUpdated, onMounted, watch } from 'vue';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
 
-const emit = defineEmits(['add-storage'])
+const visible = defineModel('visible');
+
+const emit = defineEmits(['add-project'])
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
 
-const visible = defineModel('visible')
-
 const schema = yup.object({
-  name: yup.string().required().label('Name'),
-  currency: yup.string().required().label('Currency'),
-  balance: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Balance'),
+    name: yup.string().required().max(50).label('Name'),
+    currency: yup.string().required().label('Currency'),
+    isCurrent: yup.boolean().label('Current'),
 });
 
 const { defineField, handleSubmit,setErrors, setValues, resetForm,errors } = useForm({
-  validationSchema: schema,
+    validationSchema: schema,
 });
 
 const [name] = defineField('name');
 const [currency] = defineField('currency');
-const [balance] = defineField('balance');
+const [isCurrent] = defineField('isCurrent');
 
 onUpdated(()=>{
     resetForm();
     setValues({ currency: projectStore.currentProject.Project.currency});
 });
 
-const onAddStorage = handleSubmit(async (values) => {
-    const result = await balanceStore.addStorage(projectStore.currentProject.Project.id, values);
-    emit('add-storage', result);
-});
 
+const onAddProject = handleSubmit(async (values) => {
+    const result = await projectStore.addProject(values);
+    if(result.status === "success"){
+        emit('add-project', result.newProject);
+    }else{
+        let errors = result.fieldErrors;
+        if(errors){
+            setErrors(errors);
+        }else{
+            //TODO show something went wrong?
+        }
+    }
+});
 </script>
 <template>
-    <Dialog v-model:visible="visible" modal header="Add Storage" :style="{ width: '25rem' }">
-        <form @submit="onAddStorage">
+<Dialog v-model:visible="visible" modal header="Add Project" :style="{ width: '25rem' }">
+        <form @submit="onAddProject">
             <div class="mb-4 flex flex-col gap-y-5">
                 <div class="field">
                     <InputText id="name" v-model="name" type="text" placeholder="Name" fluid 
@@ -59,12 +68,11 @@ const onAddStorage = handleSubmit(async (values) => {
                     </Select>
                     <Message v-if="errors.currency"  size="small" severity="error" variant="simple">{{ errors.currency }}</Message>
                 </div>
-                <div class="field">
-                    <h1 class="text-lg font-light mb-2">Set current balance</h1>
-                    <InputNumber v-model="balance" name="balance" autocomplete="off" placeholder="Balance (optional)" 
-                    inputId="balance" v-bind="$currencyFieldProps(currency)" fluid
-                    :class="{ 'p-invalid': errors.balance }"  />
-                    <Message v-if="errors.balance"  size="small" severity="error" variant="simple">{{ errors.balance }}</Message>
+                <div class="field flex items-center gap-2">
+                    <Checkbox v-model="isCurrent" inputId="isCurrent" name="isCurrent"
+                    :class="{ 'p-invalid': errors.isCurrent }" binary />
+                    <label for="isCurrent"> Set as current project</label>
+                    <Message v-if="errors.isCurrent"  size="small" severity="error" variant="simple">{{ errors.isCurrent }}</Message>
                 </div>
             </div>
             <div class="flex justify-end">

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import {useBalanceStore} from "./balance"
 import ProjectService from '@/services/ProjectService';
 
 export const useProjectStore = defineStore({
@@ -17,7 +18,6 @@ export const useProjectStore = defineStore({
         },
         getCurrencyList:(state)=>{
             let currencyList = [];
-            console.log(state.currency);
             let currencyTypes = Object.keys(state.currency);
             for(const currencyType of currencyTypes){
                 currencyList.push({
@@ -25,17 +25,35 @@ export const useProjectStore = defineStore({
                     items:Object.keys(state.currency[currencyType]).sort()
                 });
             }
-            console.log(currencyList);
             return currencyList;
         }
     },
     actions: {
-        setCurrentProject(project) {
+        setCurrentProject(project, config) {
             this.currentProject = project;
+            if(config){
+                this.setCurrencyConfig(config);
+            }
         },
         setCurrencyConfig(config){
             this.currency = config.currency;
             this.rates = config.rates;
+        },
+        async refreshProjectState(project, currencyConfig){
+            const balanceStorage = useBalanceStore();
+            await balanceStorage.syncBalance(project.projectId);
+            this.setCurrentProject(project, currencyConfig);
+        },
+        async addProject(data){
+            const responseData = await ProjectService.addProject(data);
+            if(responseData?.newProject?.isCurrent){
+                await this.refreshProjectState(responseData.newProject, responseData.currency);
+            };
+            return responseData;
+        },
+        async switchCurrentProject(projectId, data){
+            const responseData = await ProjectService.switchCurrentProject(projectId, data);
+            await this.refreshProjectState(responseData.project, responseData.currency);
         },
         async getUserProjects(){
             const response = await ProjectService.getUserProjects();

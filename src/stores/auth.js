@@ -21,9 +21,8 @@ export const useAuthStore = defineStore({
                     this.token = data.token;
                     localStorage.setItem('authToken', data.token);
                 }
-                const projectStore = useProjectStore()
-                projectStore.setCurrentProject(data.currentProject);
-                projectStore.setCurrencyConfig(data.currency); 
+                const projectStore = useProjectStore();
+                projectStore.setCurrentProject(data.currentProject, data.currency);
             }
         },
         async login(creds) {
