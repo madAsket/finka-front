@@ -7,6 +7,9 @@ class ProjectService extends AbstractService {
     async getProjectUsers(projectId){
         return await this.request('get', `/${projectId}/users`);
     }
+    async inviteUserToProject(projectId, data){
+        return await this.request('post', `/${projectId}/users`, data);
+    }
     async addProject(data){
         return await this.request('post', "/", data);
     }

@@ -1,15 +1,21 @@
 <script setup>
-    import Chip from "primevue/chip"
-    import Button from "primevue/button"
-    defineProps({
-        expenseItem:Object,
-        baseCurrency:String
-    })
+import Chip from "primevue/chip"
+import Button from "primevue/button"
+import { useBalanceStore } from "@/stores/balance";
 
-    const formatDate = (dateString) =>{
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat('ru-RU',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
-    }
+const balanceStore = useBalanceStore();
+const props = defineProps({
+    expenseItem:Object,
+    baseCurrency:String
+})
+
+const formatDate = (dateString) =>{
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('ru-RU',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
+}
+const deleteExpense = async ()=>{
+    await balanceStore.deleteExpense(props.expenseItem.projectId, props.expenseItem.id);
+}
 </script>
 <template>
     <div class="flex items-center justify-start py-2">
@@ -31,7 +37,7 @@
         </div>
         <div class="flex items-start ml-auto gap-2">
             <Button class="w-7 h-7 text-slate-400" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
-            <Button class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
+            <Button @click="deleteExpense" class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
         </div>
     </div>
 </template>

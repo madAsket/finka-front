@@ -1,11 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
-import Chip from "primevue/chip"
 import Button from "primevue/button"
-import Toolbar from "primevue/toolbar"
 import {useProjectStore} from "@/stores/project"
 import AddStorageModalView from "@/views/balance/AddStorageModalView.vue"
 import { useBalanceStore } from '@/stores/balance';
@@ -70,7 +67,6 @@ onMounted(async () => {
                         <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
                         <Button class="w-7 h-7 text-green-600" size="small" icon="pi pi-plus" rounded outlined aria-label="Top up" />
                         <Button class="w-7 h-7 text-slate-400" size="small" icon="pi pi-arrow-right-arrow-left" rounded outlined aria-label="Transfer" />
-                        <Button class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
                     </div>
                 </template>
             </Column>

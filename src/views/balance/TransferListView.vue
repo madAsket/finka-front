@@ -39,6 +39,15 @@ const addTransfer = (transfer) => {
     transfers.value.push(transfer);
 };
 
+const deleteTransfer = async (transfer) => {
+    const result = await balanceStore.deleteTransfer(transfer.projectId, transfer.id);
+    if(result.status === "success"){
+        transfers.value = transfers.value.filter((item)=>{
+            return item.id !== transfer.id;
+        });
+    }
+};
+
 </script>
 <template>
 <div>
@@ -72,6 +81,11 @@ const addTransfer = (transfer) => {
             <Column field="transferrer" header="Author">
                 <template #body="{ data }">
                     <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.User.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
+                </template>
+            </Column>
+            <Column header="Actions">
+                <template #body="{ data }">
+                    <Button @click="deleteTransfer(data)" class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
                 </template>
             </Column>
         </DataTable>

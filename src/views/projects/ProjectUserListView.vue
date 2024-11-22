@@ -19,6 +19,12 @@ function showInviteModal(){
     isInviteModalShown.value = true;
 }
 
+const addUser = (newUser) => {
+    isInviteModalShown.value = false;
+    users.value.push(newUser);
+};
+
+
 </script>
 <template>
 <div>
@@ -29,7 +35,7 @@ function showInviteModal(){
     <div>
         <Button @click="showInviteModal" class="mr-2 mb-5" icon="pi pi-plus" label="Invite user"  size="small" />
     </div>
-    <InviteUserModalView v-model:visible="isInviteModalShown"/>
+    <InviteUserModalView v-model:visible="isInviteModalShown" @add-user="addUser"/>
     <div>
         <DataTable :value="users" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="firstName" header="Username">
@@ -44,13 +50,6 @@ function showInviteModal(){
                 </template>
             </Column>
             <Column field="email" header="Email" class="max-w-40 font-bold"></Column>
-            <Column header="Actions">
-                <template #body="{ data }">
-                    <div class="flex gap-2">
-                        <Button v-if="!projectStore.isOwner(data.id)" class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
-                    </div>
-                </template>
-            </Column>
         </DataTable>
     </div>
 </div>

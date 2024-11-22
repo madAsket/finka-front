@@ -7,7 +7,7 @@ class AbstractService {
     async request(method, url, credentials){
         try{
             const response = await axios[method](`${this.baseUrl}${url}`, credentials);
-            let data = response.data.data;
+            let data = response.data.data || {};
             data.status = response.data.status;
             return data;
         }catch(e){

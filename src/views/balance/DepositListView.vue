@@ -9,11 +9,12 @@ import AddDepositModalView from './AddDepositModalView.vue';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
 
-const projectStore = useProjectStore()
+const projectStore = useProjectStore();
+const balanceStore = useBalanceStore();
 
 const deposits = ref([])
 onMounted(async () => {
-    deposits.value = await useBalanceStore().getAllDeposits(projectStore.currentProject.Project.id);
+    deposits.value = await balanceStore.getAllDeposits(projectStore.currentProject.Project.id);
 });
 
 
@@ -29,6 +30,15 @@ const addDeposit = (newDeposit) => {
     deposits.value.sort((a,b)=>{
         return new Date(b.depositedAt) - new Date(a.depositedAt);
     })
+};
+
+const deleteDeposit = async (deposit) => {
+    const result = await balanceStore.deleteDeposit(deposit.projectId, deposit.id);
+    if(result.status === "success"){
+        deposits.value = deposits.value.filter((item)=>{
+            return item.id !== deposit.id;
+        });
+    }
 };
 
 const isAddDepositModalShown = ref(false);
@@ -82,7 +92,7 @@ function showDepositModal(){
                 <template #body="{ data }">
                     <div class="flex gap-2">
                         <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
-                        <Button class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
+                        <Button @click="deleteDeposit(data)" class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
                     </div>
                 </template>
             </Column>

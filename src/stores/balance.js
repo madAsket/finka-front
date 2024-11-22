@@ -46,6 +46,11 @@ export const useBalanceStore = defineStore({
                 return this.syncBalanceHandler(response, projectId);
             });
         },
+        async deleteDeposit(projectId, depositId){
+            return await BalanceService.deleteDeposit(projectId, depositId).then((response)=>{
+                return this.syncBalanceHandler(response, projectId);
+            });
+        },
         async getAllDeposits(projectId){
             return await BalanceService.getAllDeposits(projectId);
         },
@@ -69,6 +74,23 @@ export const useBalanceStore = defineStore({
                 this.expenses.push(result);
             }
             return result;
+        },
+        async deleteExpense(projectId, expenseId){
+            const result = await BalanceService.deleteExpense(projectId, expenseId).then((response)=>{
+                return this.syncBalanceHandler(response, projectId);
+            });
+            if(result.status === "success"){
+                //TODO do not add expense if it's from other month;
+                this.expenses = this.expenses.filter((item)=>{
+                    return item.id !== expenseId;
+                });
+            }
+            return result;
+        },
+        async deleteTransfer(projectId, transferId){
+            return await BalanceService.deleteTransfer(projectId, transferId).then((response)=>{
+                return this.syncBalanceHandler(response, projectId);
+            });
         },
         async getMonthsExpenses(projectId, date){//TODO: filter by month/year
             return await BalanceService.getMonthsExpenses(projectId, date);

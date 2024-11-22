@@ -13,6 +13,9 @@ class BalanceService extends AbstractService {
     async addDeposit(projectId, data){
         return await this.request('post', `/${projectId}/deposits`, data);
     }
+    async deleteDeposit(projectId, depositId){
+        return await this.request('delete', `/${projectId}/deposits/${depositId}`);
+    }
     async getAllDeposits(projectId){
         return await this.request('get', `/${projectId}/deposits`);
     }
@@ -28,11 +31,17 @@ class BalanceService extends AbstractService {
     async addExpense(projectId, data){
         return await this.request('post', `/${projectId}/expenses`, data);
     }
+    async deleteExpense(projectId, expenseId){
+        return await this.request('delete', `/${projectId}/expenses/${expenseId}`);
+    }
     async getMonthsExpenses(projectId, date){//TODO: filter by month/year
         return await this.request('get', `/${projectId}/expenses`);
     }
     async addTransfer(projectId, data){
         return await this.request('post', `/${projectId}/transfers`, data);
+    }
+    async deleteTransfer(projectId, transferId){
+        return await this.request('delete', `/${projectId}/transfers/${transferId}`);
     }
     async getAllTransfers(projectId){
         return await this.request('get', `/${projectId}/transfers`);
