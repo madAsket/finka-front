@@ -39,6 +39,7 @@ onUpdated(()=>{
 const onAddStorage = handleSubmit(async (values) => {
     const result = await balanceStore.addStorage(projectStore.currentProject.Project.id, values);
     emit('add-storage', result);
+    visible.value = false;
 });
 
 </script>

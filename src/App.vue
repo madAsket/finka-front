@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth';
 import Button from "primevue/button"
 import { onMounted, onUpdated, ref } from 'vue';
 import AddExpenseModalView from "@/views/expenses/AddExpenseModalView.vue"
+import DynamicDialog from 'primevue/dynamicdialog';
 
 const auth = useAuthStore();
 
@@ -25,7 +26,7 @@ function showAddExpenseModal(){
         <Button rounded @click="showAddExpenseModal" class="bottom-10 right-10 !fixed overflow-visible" icon="pi pi-plus"  aria-label="Add expense"  />
         <AddExpenseModalView v-model:visible="isAddExpenseModalShown"/>
     </section>
-
+    <DynamicDialog />
   </main>
 </template>
 

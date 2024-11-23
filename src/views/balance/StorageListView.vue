@@ -6,24 +6,42 @@ import Button from "primevue/button"
 import {useProjectStore} from "@/stores/project"
 import AddStorageModalView from "@/views/balance/AddStorageModalView.vue"
 import { useBalanceStore } from '@/stores/balance';
+import StorageItemView from './StorageItemView.vue';
 
 const storages = ref([])
 const projectStore = useProjectStore()
 const balanceStore = useBalanceStore()
 
 const isAddStorageModalShown = ref(false);
-function showAddStorageModal(){
-    isAddStorageModalShown.value = true;
-}
 
 const addStorage = (newStorage) => {
-    isAddStorageModalShown.value = false;
     storages.value.push(newStorage);
 };
 
 onMounted(async () => {
     storages.value = await balanceStore.getAllStorages(projectStore.currentProject.Project.id);
 });
+
+const makeTransfer = (transfer)=>{
+    storages.value.forEach((item)=>{
+        if(item.id === transfer.fromStorageId){
+            item.balance = Number(item.balance) - Number(transfer.transferredAmount);
+        }
+        if(item.id === transfer.toStorageId){
+            item.balance = Number(item.balance) + Number(transfer.receivedAmount);
+        }
+    });
+};
+
+const makeDeposit = (deposit)=>{
+    storages.value.forEach((item)=>{
+        if(item.id === deposit.storageId){
+            item.balance = Number(item.balance) + Number(deposit.amount);
+            return;
+        }
+    });
+};
+
 
 </script>
 <template>
@@ -34,8 +52,9 @@ onMounted(async () => {
         <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
     </div>
     <div>
-        <Button @click="showAddStorageModal"  class="mr-2 mb-5" icon="pi pi-plus" label="Add storage"  size="small" />
+        <Button @click="isAddStorageModalShown = true"  class="mr-2 mb-5" icon="pi pi-plus" label="Add storage"  size="small" />
         <AddStorageModalView v-model:visible="isAddStorageModalShown" @add-storage="addStorage"/>
+        <!-- <AddStorageModalView v-model:visible="isAddStorageModalShown"/> -->
         <!-- <Toolbar class="inline-flex justify-content-start p-1 max-w-xl" :pt="{
             center:{class:'hidden'},
             end:{class:'hidden'}}">
@@ -48,29 +67,10 @@ onMounted(async () => {
         <!-- TODO: Currencies exchange information -->
     </div>
     <div>
-        <DataTable v-if="storages.length" :value="storages" stripedRows  class="text-xs" tableStyle="max-width: 50rem">
-            <Column field="name" header="Storage" class="max-w-40"></Column>
-            <Column field="currency" header="Currency" class="max-w-40"></Column>
-            <Column field="balance" :header="`Balance (${projectStore.currentProject.Project.currency})`" >
-                <template #body="{ data }">
-                    <b> {{$convertCurrency(data.balance, data.currency, projectStore.currentProject.Project.currency)}}</b>
-                </template>
-            </Column>            
-            <Column  header="Origin balance" class="max-w-40">
-                <template #body="{ data }">
-                    <b>{{ $formatCurrency(data.balance, data.currency) }}</b>
-                </template>
-            </Column>
-            <Column header="Actions">
-                <template #body="{ data }">
-                    <div class="flex gap-2">
-                        <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
-                        <Button class="w-7 h-7 text-green-600" size="small" icon="pi pi-plus" rounded outlined aria-label="Top up" />
-                        <Button class="w-7 h-7 text-slate-400" size="small" icon="pi pi-arrow-right-arrow-left" rounded outlined aria-label="Transfer" />
-                    </div>
-                </template>
-            </Column>
-        </DataTable>
+        <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-lg">
+            <StorageItemView v-for="item in storages" :key="item.id"
+            :storage="item"  @makeTransfer="makeTransfer" @makeDeposit="makeDeposit" />
+        </div>
     </div>
 </div>
 </template>

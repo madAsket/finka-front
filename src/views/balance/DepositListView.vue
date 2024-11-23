@@ -8,9 +8,11 @@ import Button from "primevue/button"
 import AddDepositModalView from './AddDepositModalView.vue';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
+import { useDialogManager } from '@/composables/dialog';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
+const dialogManager = useDialogManager();
 
 const deposits = ref([])
 onMounted(async () => {
@@ -24,7 +26,6 @@ const formatDate = (dateString) =>{
 }
 
 const addDeposit = (newDeposit) => {
-    isAddDepositModalShown.value = false;
     deposits.value.push(newDeposit);
     //ERROR
     deposits.value.sort((a,b)=>{
@@ -41,9 +42,17 @@ const deleteDeposit = async (deposit) => {
     }
 };
 
-const isAddDepositModalShown = ref(false);
 function showDepositModal(){
-    isAddDepositModalShown.value = true;
+    dialogManager.openDialog(AddDepositModalView, {
+        props:{
+            header: 'Top up',
+        },
+        emits:{
+            onSave: (deposit) => {
+                addDeposit(deposit);
+            }
+        }
+    });
 }
 
 </script>
@@ -51,12 +60,11 @@ function showDepositModal(){
 <div>
     <div class="mb-5">
         <h1 class="text-surface-700  font-bold text-2xl">Deposits</h1>
-        <p class="text-xs"><b>Project:</b> Family budgeting.</p>
+        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
     </div>
     <div>
         <Button @click="showDepositModal" class="mr-2 mb-5" icon="pi pi-credit-card" label="Top up"  size="small" />
     </div>
-    <AddDepositModalView v-model:visible="isAddDepositModalShown" @add-deposit="addDeposit"/>
     <div>
         <DataTable :value="deposits" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
             <Column field="amount" :header="`Amount (${projectStore.currentProject.Project.currency})`" >
