@@ -13,6 +13,9 @@ class ProjectService extends AbstractService {
     async addProject(data){
         return await this.request('post', "/", data);
     }
+    async editProject(projectId, data){
+        return await this.request('patch', `/${projectId}/`, data);
+    }
     async switchCurrentProject(projectId){
         return await this.request('post', `/${projectId}/switch`);
     }

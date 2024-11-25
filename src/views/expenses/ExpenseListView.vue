@@ -12,8 +12,6 @@ onMounted(async () => {
     await balanceStore.loadExpenses(projectStore.currentProject.Project.id);
 });
 
-const baseCurrency = ref(projectStore.currentProject.Project.currency);
-
 </script>
 <template>
 <div>
@@ -24,7 +22,7 @@ const baseCurrency = ref(projectStore.currentProject.Project.currency);
     <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-2xl">
         <ExpenseItemView v-for="item in balanceStore.sortedExpenses" :key="item.id"
         :expenseItem="item" 
-        :baseCurrency="baseCurrency"/>
+        :baseCurrency="projectStore.currentProject.Project.currency"/>
     </div>
 </div>
 </template>

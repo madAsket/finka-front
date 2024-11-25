@@ -19,7 +19,7 @@ const authStore = useAuthStore();
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
 const storages = ref([]);
-const users = ref([])
+const users = ref([]);
 const currentCurrency = ref(projectStore.currentProject.Project.currency)
 
 const schema = yup.object({

@@ -33,9 +33,9 @@ const addProject = (newProject) => {
 };
 
 
-const onSwitchProject = (project) => {
+const onSwitchProject = (projectId) => {
     projects.value.forEach((item)=>{
-        if(item.Project.id !== project.Project.id)
+        if(item.Project.id !== projectId)
             item.isCurrent = false;
     });
 };

@@ -35,11 +35,19 @@ export const useBalanceStore = defineStore({
                 return this.syncBalanceHandler(response, projectId);
             });
         },
+        async editStorage(projectId, storageId, data){
+            return await BalanceService.editStorage(projectId, storageId, data);
+        },
         async getAllStorages(projectId, params){
             return await BalanceService.getAllStorages(projectId, params)
         },
         async getNonEmptyStorages(projectId){
             return await BalanceService.getNonEmptyStorages(projectId);
+        },
+        async editDeposit(projectId, depositId, data){
+            return await BalanceService.editDeposit(projectId, depositId, data).then((response)=>{
+                return this.syncBalanceHandler(response, projectId);
+            });
         },
         async addDeposit(projectId, data){
             return await BalanceService.addDeposit(projectId, data).then((response)=>{

@@ -4,6 +4,9 @@ class BalanceService extends AbstractService {
     async addStorage(projectId, data){
         return await this.request('post', `/${projectId}/storages`, data);
     }
+    async editStorage(projectId, storageId, data){
+        return await this.request('patch', `/${projectId}/storages/${storageId}`, data);
+    }
     async getAllStorages(projectId, params){
         return await this.request('get', `/${projectId}/storages`,{params});
     }
@@ -12,6 +15,9 @@ class BalanceService extends AbstractService {
     }
     async addDeposit(projectId, data){
         return await this.request('post', `/${projectId}/deposits`, data);
+    }
+    async editDeposit(projectId, depositId, data){
+        return await this.request('patch', `/${projectId}/deposits/${depositId}`, data);
     }
     async deleteDeposit(projectId, depositId){
         return await this.request('delete', `/${projectId}/deposits/${depositId}`);

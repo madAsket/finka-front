@@ -4,6 +4,8 @@ import { useProjectStore } from "@/stores/project";
 import { useDialogManager } from "@/composables/dialog";
 import TransferModalView from "./TransferModalView.vue";
 import AddDepositModalView from "./AddDepositModalView.vue";
+import EditStorageModalView from "./EditStorageModalView.vue";
+import { onUpdated } from "vue";
 
 const emit = defineEmits(['makeTransfer', 'makeDeposit']);
 
@@ -45,6 +47,17 @@ const openDepositForm = ()=>{
     });
 }
 
+const openEditForm = ()=>{
+    dialogManager.openDialog(EditStorageModalView, {
+        props:{
+            header: 'Edit storage',
+        },
+        data: {
+            storage:props.storage
+        }
+    });
+}
+
 </script>
 <template>
     <div class="flex items-center justify-start py-2">
@@ -64,10 +77,10 @@ const openDepositForm = ()=>{
                 {{ $formatCurrency(storage.balance, storage.currency) }}
             </p>
         </div>
-        <div class="flex items-start ml-auto gap-2">
-            <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
+        <div class="flex items-start justify-end ml-auto gap-2 w-24">
+            <Button v-if="storage.balance > 0" @click="openTransferForm" class="w-7 h-7 text-slate-400" size="small" icon="pi pi-arrow-right-arrow-left" rounded outlined aria-label="Transfer" />
             <Button @click="openDepositForm" class="w-7 h-7 text-green-600" size="small" icon="pi pi-plus" rounded outlined aria-label="Top up" />
-            <Button @click="openTransferForm" class="w-7 h-7 text-slate-400" size="small" icon="pi pi-arrow-right-arrow-left" rounded outlined aria-label="Transfer" />
+            <Button @click="openEditForm" class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
         </div>
     </div>
 </template>

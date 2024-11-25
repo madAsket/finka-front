@@ -51,6 +51,9 @@ export const useProjectStore = defineStore({
             };
             return responseData;
         },
+        async editProject(projectId, data){
+            return await ProjectService.editProject(projectId, data);
+        },
         async switchCurrentProject(projectId, data){
             const responseData = await ProjectService.switchCurrentProject(projectId, data);
             await this.refreshProjectState(responseData.project, responseData.currency);
