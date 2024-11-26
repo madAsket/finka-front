@@ -4,12 +4,8 @@ import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Message from 'primevue/message';
-import Select from 'primevue/select'
 import InputNumber from 'primevue/inputnumber'
-import { ref, onMounted, onUpdated, computed, watch } from 'vue';
-import DatePicker from 'primevue/datepicker'
-import Fieldset from 'primevue/fieldset'
-import Divider from 'primevue/divider';
+import { onUpdated, computed } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
@@ -43,8 +39,6 @@ const onAddCategory = handleSubmit(async (values) => {
     emit('add-category', result);
 });
 
-
-
 const currentNewMonthLimit = computed(() => {
     if(limit.value > 0){
         return balanceStore.limit + limit.value;
@@ -52,10 +46,6 @@ const currentNewMonthLimit = computed(() => {
         return balanceStore.limit;
     }
 })
-
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
-}
 
 </script>
 <template>
@@ -69,11 +59,12 @@ const formatCurrency = (value) => {
                 </div>
                 <div class="field">
                     <h1 class="text-lg font-light mb-2">Set limit for current month</h1>
-                    <InputNumber v-model="limit" name="limit" autocomplete="off" placeholder="Limit (optional)" 
-                    inputId="balance" mode="currency" currency="EUR" locale="de-DE" fluid />
+                    <InputNumber v-model="limit" autocomplete="off" placeholder="Limit" 
+                    inputId="limit" v-bind="$currencyFieldProps(projectStore.currentProject.Project.currency)" fluid
+                    :class="{ 'p-invalid': errors.limit }"  />
                     <Message v-if="errors.limit"  size="small" severity="error" variant="simple">{{ errors.limit }}</Message>
                 </div>
-                <h1 class="text-lg font-light uppercase">New limit: <span class="font-extrabold">{{ formatCurrency(currentNewMonthLimit) }}</span></h1>
+                <h1 class="text-lg font-light uppercase">New limit: <span class="font-extrabold">{{ $formatCurrency(currentNewMonthLimit, projectStore.currentProject.Project.currency) }}</span></h1>
             </div>
             <div class="flex justify-end">
                 <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />

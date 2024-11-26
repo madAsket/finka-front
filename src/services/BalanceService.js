@@ -28,6 +28,9 @@ class BalanceService extends AbstractService {
     async addExpenseCategory(projectId, data){
         return await this.request('post', `/${projectId}/expensecategories`, data);
     }
+    async editExpenseCategory(projectId, catId, data){
+        return await this.request('patch', `/${projectId}/expensecategories/${catId}`, data);
+    }
     async getProjectCategories(projectId){
         return await this.getMonthsCategories(projectId);
     }
@@ -36,6 +39,9 @@ class BalanceService extends AbstractService {
     }
     async addExpense(projectId, data){
         return await this.request('post', `/${projectId}/expenses`, data);
+    }
+    async editExpense(projectId, expenseId, data){
+        return await this.request('patch', `/${projectId}/expenses/${expenseId}`, data);
     }
     async deleteExpense(projectId, expenseId){
         return await this.request('delete', `/${projectId}/expenses/${expenseId}`);
@@ -48,6 +54,9 @@ class BalanceService extends AbstractService {
     }
     async deleteTransfer(projectId, transferId){
         return await this.request('delete', `/${projectId}/transfers/${transferId}`);
+    }
+    async editTransfer(projectId, transferId, data){
+        return await this.request('patch', `/${projectId}/transfers/${transferId}`, data);
     }
     async getAllTransfers(projectId){
         return await this.request('get', `/${projectId}/transfers`);

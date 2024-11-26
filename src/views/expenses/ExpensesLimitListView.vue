@@ -1,13 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import DataTable from "primevue/datatable"
-import Column from "primevue/column"
-import Chip from "primevue/chip"
 import Button from "primevue/button"
 import AddExpenseCategoryModalView from "@/views/expenses/AddExpenseCategoryModalView.vue"
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
+import ExpenseLimitItemView from './ExpenseLimitItemView.vue';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -17,14 +14,6 @@ const limits = ref([]);
 onMounted(async () => {
     limits.value = await balanceStore.getMonthsCategories(projectStore.currentProject.Project.id);
 });
-
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('eu-EU', { style: 'currency', currency: 'EUR' }).format(value);
-}
-
-const categoryColor = (value) => {
-    return `bg-${value}`
-}
 
 const isAddExpenseCategoryModalShown = ref(false);
 function showAddExpenseCategoryModal(){
@@ -48,8 +37,13 @@ const addCategory = (newCategory) => {
         <Button  class="mr-2 mb-5" @click="showAddExpenseCategoryModal" icon="pi pi-plus" label="Add category"  size="small" />
     </div>
     <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown" @add-category="addCategory" />
+
+    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-2xl">
+        <ExpenseLimitItemView v-for="item in limits" :key="item.id"
+        :expenseLimit="item" />
+    </div>
     <div>
-        <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
+        <!-- <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="category.label" header="Category"  >
                 <template #body="{ data }">
                     <Chip :label="data.name"></Chip>
@@ -67,7 +61,7 @@ const addCategory = (newCategory) => {
                     </div>
                 </template>
             </Column>
-        </DataTable>
+        </DataTable> -->
     </div>
 </div>
 </template>

@@ -8,6 +8,7 @@ import TransferModalView from './TransferModalView.vue';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
 import { useDialogManager } from '@/composables/dialog';
+import TransferItemView from './TransferItemView.vue';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -17,11 +18,6 @@ const transfers = ref([])
 onMounted(async () => {
     transfers.value = await balanceStore.getAllTransfers(projectStore.currentProject.Project.id);
 });
-
-const formatDate = (dateString) =>{
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-GB',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
-}
 
 function showTransferModal(){
     dialogManager.openDialog(TransferModalView, {
@@ -40,13 +36,10 @@ const addTransfer = (transfer) => {
     transfers.value.push(transfer);
 };
 
-const deleteTransfer = async (transfer) => {
-    const result = await balanceStore.deleteTransfer(transfer.projectId, transfer.id);
-    if(result.status === "success"){
-        transfers.value = transfers.value.filter((item)=>{
-            return item.id !== transfer.id;
-        });
-    }
+const deleteTransfer = async (transferId) => {
+    transfers.value = transfers.value.filter((item)=>{
+        return item.id !== transferId;
+    });
 };
 
 </script>
@@ -59,36 +52,9 @@ const deleteTransfer = async (transfer) => {
     <div>
         <Button @click="showTransferModal" class="mr-2 mb-5" icon="pi pi-arrow-right-arrow-left" label="Make transfer"  size="small" />
     </div>
-    <div>
-        <DataTable :value="transfers" stripedRows  class="text-xs" tableStyle="max-width: 60rem">
-            <Column field="transferredAt" header="Date">
-                <template #body="{ data }">
-                    <b>{{ formatDate(data.transferredAt) }}</b>
-                </template>
-            </Column>
-            <Column field="fromStorage.name" header="From"></Column>
-            <Column field="transferredAmount" header="Transferred" >
-                <template #body="{ data }">
-                    <b>{{ $formatCurrency(data.transferredAmount, data.fromStorage.currency) }}</b>
-                </template>
-            </Column>
-            <Column field="toStorage.name" header="To"></Column>
-            <Column field="receivedAmount" header="Recieved" >
-                <template #body="{ data }">
-                    <b>{{ $formatCurrency(data.receivedAmount, data.toStorage.currency) }}</b>
-                </template>
-            </Column>
-            <Column field="transferrer" header="Author">
-                <template #body="{ data }">
-                    <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.User.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
-                </template>
-            </Column>
-            <Column header="Actions">
-                <template #body="{ data }">
-                    <Button @click="deleteTransfer(data)" class="w-7 h-7 text-red-300" size="small" icon="pi pi-trash" rounded outlined aria-label="Delete" />
-                </template>
-            </Column>
-        </DataTable>
+    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-xl">
+         <TransferItemView v-for="item in transfers" :key="item.id"
+            :transfer="item" @deleteTransfer="deleteTransfer"/>
     </div>
 </div>
 </template>
