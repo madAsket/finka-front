@@ -9,7 +9,9 @@ import * as yup from 'yup';
 import { ref, inject, onMounted } from 'vue';
 import { useBalanceStore } from '@/stores/balance';
 import { useProjectStore } from '@/stores/project';
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const emit = defineEmits(['save']);
 const balanceStore = useBalanceStore();
 const projectStore = useProjectStore();
@@ -51,12 +53,13 @@ const onEdit = handleSubmit(async (values) => {
         Object.assign(model.value, result);
         emit('save');
         dialogRef.value.close();
+        toastManager.show("Expense updated!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            //TODO show something went wrong?
+            toastManager.error();
         }
     }
 });

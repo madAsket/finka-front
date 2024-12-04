@@ -13,7 +13,9 @@ import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
 import {useBalanceStore} from "@/stores/balance"
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const visible = defineModel('visible');
 const projectStore = useProjectStore();
 const authStore = useAuthStore();
@@ -69,12 +71,13 @@ const onAddExpense = handleSubmit(async (values) => {
     const result = await balanceStore.addExpense(projectStore.currentProject.Project.id, values);
     if(result.status === "success"){
         visible.value = false;
+        toastManager.show("Expense added!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            //TODO show something went wrong?
+            toastManager.error();
         }
     }
 

@@ -6,7 +6,12 @@ import EditExpenseModalView from "./EditExpenseModalView.vue";
 import { ref } from "vue";
 import { useDialogManager } from "@/composables/dialog";
 import { useProjectStore } from "@/stores/project";
+import BaseAvatar from "@/components/BaseAvatar.vue";
+import { useToastManger } from '@/composables/toaster';
+import { useConfirmManger } from "@/composables/confirmAction";
 
+const confirmManager = useConfirmManger();
+const toastManager = useToastManger();
 const balanceStore = useBalanceStore();
 const projectStore = useProjectStore();
 const props = defineProps({
@@ -17,13 +22,12 @@ const dialogManager = useDialogManager();
 
 const expense = ref(props.expenseItem)
 
-const formatDate = (dateString) =>{
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ru-RU', {year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
-}
-const deleteExpense = async ()=>{
-    await balanceStore.deleteExpense(props.expenseItem.projectId, props.expenseItem.id);
-}
+const deleteExpense = confirmManager.confirmDelete(async ()=>{
+    const result = await balanceStore.deleteExpense(props.expenseItem.projectId, props.expenseItem.id);
+    if(result.status === "success"){
+        toastManager.show('Expense deleted!');
+    }
+});
 
 const openEditForm = ()=>{
     dialogManager.openDialog(EditExpenseModalView, {
@@ -40,12 +44,11 @@ const openEditForm = ()=>{
 <template>
     <div class="flex items-center justify-start py-2">
         <div class="mr-2">
-            <img src="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" width="40" height="40" 
-            class="border p-0.5 rounded-full border-indigo-800">
+            <BaseAvatar :avatar="expenseItem.User.avatar" :firstName="expenseItem.User.firstName"/>
         </div>
         <div class="flex flex-col w-80 mr-1 items-start justify-start">
             <h3 class="text-sm  mb-1">
-                <span class="mr-2 text-xs font-bold">{{ formatDate(expenseItem.expensedAt) }} <span class="text-xs font-semibold text-slate-500">from {{ expenseItem.Storage.name }}</span></span>
+                <span class="mr-2 text-xs font-bold">{{ $formatDate(expenseItem.expensedAt) }} <span class="text-xs font-semibold text-slate-500">from {{ expenseItem.Storage.name }}</span></span>
             </h3>
             <p class="text-xs text-slate-500 overflow-hidden">
                 <Chip :pt="{label:{class:'overflow-hidden max-h-4'}}" :label="expenseItem.ExpenseCategory.name" class="bg-indigo-50 h-5 text-xs max-w-32 overflow-hidden"></Chip>

@@ -10,7 +10,9 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const emit = defineEmits(['add-storage'])
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -40,6 +42,7 @@ const onAddStorage = handleSubmit(async (values) => {
     const result = await balanceStore.addStorage(projectStore.currentProject.Project.id, values);
     emit('add-storage', result);
     visible.value = false;
+    toastManager.show("Storage added");
 });
 
 </script>

@@ -6,7 +6,9 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref, inject, onMounted } from 'vue';
 import {useProjectStore} from "@/stores/project"
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const projectStore = useProjectStore();
 const dialogRef = inject('dialogRef');
 
@@ -32,11 +34,13 @@ const onEditProject = handleSubmit(async (values) => {
     if(result.status === "success"){
         project.value.Project.name = values.name;
         dialogRef.value.close();
+        toastManager.show("Project updated!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
+            toastManager.error();
             //TODO show something went wrong?
         }
     }

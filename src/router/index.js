@@ -16,6 +16,8 @@ import ProjectListView from '@/views/projects/ProjectListView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import { useAuthStore } from '@/stores/auth';
 import SignUpView from '@/views/auth/SignUpView.vue'
+import SecuritySettingsView from '@/views/profile/SecuritySettingsView.vue'
+import ProfileSettingsView from '@/views/profile/ProfileSettingsView.vue'
 
 
 const router = createRouter({
@@ -110,11 +112,18 @@ const router = createRouter({
     { 
       path: '/profile',
       component: UserProfileView, //avatar, username, password form etc.
-      // children:[
-      //   //password change,
-      //   //notifications
-      //   //etc.
-      // ]
+      children:[
+        { 
+          path: '',
+          name:"profile",
+          component: ProfileSettingsView, //list of users with CRUD features
+        },
+        { 
+          path: 'security',
+          name:"security",
+          component: SecuritySettingsView, //list of users with CRUD features
+        },
+      ]
     },
   ] 
 });

@@ -4,7 +4,7 @@ class AbstractService {
     constructor(baseUrl){
         this.baseUrl = baseUrl;
     }
-    async request(method, url, credentials){
+    async request(method, url, credentials, options={}){
         try{
             const response = await axios[method](`${this.baseUrl}${url}`, credentials);
             let data = response.data.data || {};

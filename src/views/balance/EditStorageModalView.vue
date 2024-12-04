@@ -6,6 +6,8 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref, inject, onMounted } from 'vue';
 import { useBalanceStore } from '@/stores/balance';
+import { useToastManger } from '@/composables/toaster';
+const toastManager = useToastManger();
 
 const balanceStore = useBalanceStore();
 const dialogRef = inject('dialogRef');
@@ -31,12 +33,13 @@ const onEditStorage = handleSubmit(async (values) => {
     if(result.status === "success"){
         storage.value.name = values.name;
         dialogRef.value.close();
+        toastManager.show("Storage updated!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            //TODO show something went wrong?
+            toastManager.error();
         }
     }
 });

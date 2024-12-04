@@ -1,12 +1,14 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import TheMenu from './components/TheMenu.vue';
 import TheBalanceInfo from './components/TheBalanceInfo.vue';
 import { useAuthStore } from '@/stores/auth';
 import Button from "primevue/button"
-import { onMounted, onUpdated, ref } from 'vue';
+import { ref } from 'vue';
 import AddExpenseModalView from "@/views/expenses/AddExpenseModalView.vue"
 import DynamicDialog from 'primevue/dynamicdialog';
+import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
 
 const auth = useAuthStore();
 
@@ -18,6 +20,8 @@ function showAddExpenseModal(){
 </script>
 
 <template>
+  <Toast />
+  <ConfirmDialog></ConfirmDialog>
   <TheMenu v-if="auth.user"/>
   <main class="h-full min-h-screen w-full bg-white pb-4 pl-4 pr-4">
     <TheBalanceInfo v-if="auth.user"/>

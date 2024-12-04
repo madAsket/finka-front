@@ -14,7 +14,7 @@ const schema = yup.object({
   username: yup.string().required().label('Username'),
   email: yup.string().required().email().label('Email'),
   password: yup.string().required().min(5).label('Password'),
-  confirmPassword: yup.string().required().oneOf([yup.ref('password'), null], 'Passwords must match').label('Password again'),
+  confirmPassword: yup.string().required().oneOf([yup.ref('password'), null], 'Passwords must match').label('Password confirmation'),
 });
 
 const { defineField, handleSubmit,setErrors,setValues, resetForm,errors } = useForm({

@@ -12,7 +12,8 @@ import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
 import { useBalanceStore } from '@/stores/balance';
-
+import { useToastManger } from '@/composables/toaster';
+const toastManager = useToastManger();
 const dialogRef = inject('dialogRef');
 const emit = defineEmits(['save'])
 const authStore = useAuthStore();
@@ -38,12 +39,13 @@ const onAddDeposit = handleSubmit(async (values) => {
     if(result.status === "success"){
         emit('save', result);
         dialogRef.value.close();
+        toastManager.show("Deposit added!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            alert("ERROR");
+            toastManager.error();
         }
     }
 });

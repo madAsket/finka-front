@@ -6,7 +6,12 @@ import { ref } from "vue";
 import { useProjectStore } from "@/stores/project";
 import EditDepositModalView from "./EditDepositModalView.vue";
 import { useDialogManager } from "@/composables/dialog";
+import BaseAvatar from "@/components/BaseAvatar.vue";
+import { useToastManger } from '@/composables/toaster';
+import { useConfirmManger } from "@/composables/confirmAction";
 
+const confirmManager = useConfirmManger();
+const toastManager = useToastManger();
 const emit = defineEmits(['deleteDeposit', 'afterDepositUpdate']);
 const balanceStore = useBalanceStore();
 const projectStore = useProjectStore();
@@ -16,17 +21,14 @@ const props = defineProps({
 const dialogManager = useDialogManager();
 const deposit = ref(props.deposit);
 
-const formatDate = (dateString) =>{
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ru-RU',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
-}
 
-const deleteDeposit = async () => {
+const deleteDeposit = confirmManager.confirmDelete(async () => {
     const result = await balanceStore.deleteDeposit(deposit.value.projectId, deposit.value.id);
     if(result.status === "success"){
-        emit('deleteDeposit', deposit.value.id)
+        emit('deleteDeposit', deposit.value.id);
+        toastManager.show("Deposit deleted!");
     }
-};
+});
 
 const openEditForm = ()=>{
     dialogManager.openDialog(EditDepositModalView, {
@@ -48,12 +50,11 @@ const openEditForm = ()=>{
 <template>
     <div class="flex items-center justify-start py-2">
         <div class="mr-2">
-            <img src="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" width="40" height="40" 
-            class="border p-0.5 rounded-full border-indigo-800">
+            <BaseAvatar :avatar="deposit.User.avatar" :firstName="deposit.User.firstName"/>
         </div>
         <div class="flex flex-col w-32 mr-1 items-start justify-start">
-            <h3 class="text-sm  mb-1">
-                <span class="mr-2 text-xs font-bold"> {{ formatDate(deposit.depositedAt) }}</span>
+            <h3 class="text-sm mb-0.5">
+                <span class="mr-2 text-xs font-bold"> {{ $formatDate(deposit.depositedAt) }}</span>
             </h3>
             <p class="text-xs text-slate-500 overflow-hidden">
                 <span class="font-light">{{ deposit.Storage.name }}</span>

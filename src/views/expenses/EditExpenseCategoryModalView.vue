@@ -8,7 +8,9 @@ import * as yup from 'yup';
 import { ref, inject, onMounted, computed } from 'vue';
 import { useBalanceStore } from '@/stores/balance';
 import { useProjectStore } from '@/stores/project';
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const emit = defineEmits(['save']);
 const balanceStore = useBalanceStore();
 const projectStore = useProjectStore();
@@ -45,12 +47,13 @@ const onEdit = handleSubmit(async (values) => {
     if(result.status === "success"){
         Object.assign(model.value, result);
         dialogRef.value.close();
+        toastManager.show("Category updated!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            //TODO show something went wrong?
+            toastManager.error();
         }
     }
 });

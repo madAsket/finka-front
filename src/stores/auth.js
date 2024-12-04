@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 import {useProjectStore} from "./project"
 import AuthService from '@/services/AuthService';
+import UploadService from '@/services/UploadService';
 
 
 export const useAuthStore = defineStore({
@@ -37,6 +38,18 @@ export const useAuthStore = defineStore({
         },
         async syncCurrentUser(){
             this.updateUserState(await AuthService.syncCurrentUser());
+        },
+        async changePassword(creds){
+            return await AuthService.changePassword(creds);
+        },
+        async editProfile(creds){
+            const data = await AuthService.editProfile(creds);
+            this.user = data;
+            return data;
+        },
+        async uploadAvatar(image){
+            const data = await UploadService.uploadAvatar(image);
+            return data;
         },
         logout() {
             this.user = undefined;

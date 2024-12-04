@@ -4,6 +4,7 @@ import {useProjectStore} from "@/stores/project"
 import { ref} from 'vue';
 import EditProjectModalView from "./EditProjectModalView.vue";
 import { useDialogManager } from "@/composables/dialog";
+import BaseAvatar from "@/components/BaseAvatar.vue";
 
 const emit = defineEmits(['switchProject'])
 
@@ -36,8 +37,7 @@ function showEditModal(){
 <template>
     <div class="flex items-center justify-start py-2">
         <div class="mr-2">
-            <img src="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" width="40" height="40" 
-            class="border p-0.5 rounded-full border-indigo-800">
+            <BaseAvatar :avatar="project.Project.ownerUser.avatar" :firstName="project.Project.ownerUser.firstName"/>
         </div>
         <div class="flex flex-col w-64 mr-1 items-start justify-start">
             <h3 class="text-sm  mb-1">

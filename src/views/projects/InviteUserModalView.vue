@@ -7,7 +7,9 @@ import { ref, onUpdated } from 'vue';
 import {useProjectStore} from "@/stores/project"
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const visible = defineModel('visible')
 const projectStore = useProjectStore();
 const emit = defineEmits(['add-user'])
@@ -31,12 +33,13 @@ const onAddUser = handleSubmit(async (values) => {
     const result = await projectStore.inviteUserToProject(projectStore.currentProject.projectId, values);
     if(result.status === "success"){
         emit('add-user', result);
+        toastManager.show("User added!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            //TODO show something went wrong?
+            toastManager.error();
         }
     }
 });

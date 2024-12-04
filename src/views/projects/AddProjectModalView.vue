@@ -10,7 +10,9 @@ import * as yup from 'yup';
 import { ref, onUpdated, onMounted, watch } from 'vue';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const visible = defineModel('visible');
 
 const emit = defineEmits(['add-project'])
@@ -41,12 +43,13 @@ const onAddProject = handleSubmit(async (values) => {
     const result = await projectStore.addProject(values);
     if(result.status === "success"){
         emit('add-project', result.newProject);
+        toastManager.show("Project created!");
     }else{
         let errors = result.fieldErrors;
         if(errors){
             setErrors(errors);
         }else{
-            //TODO show something went wrong?
+            toastManager.error();
         }
     }
 });

@@ -6,7 +6,12 @@ import { ref } from "vue";
 import { useProjectStore } from "@/stores/project";
 import { useDialogManager } from "@/composables/dialog";
 import EditTransferModalView from "./EditTransferModalView.vue";
+import BaseAvatar from "@/components/BaseAvatar.vue";
+import { useToastManger } from '@/composables/toaster';
+import { useConfirmManger } from "@/composables/confirmAction";
 
+const confirmManager = useConfirmManger();
+const toastManager = useToastManger();
 const emit = defineEmits(['deleteTransfer']);
 const balanceStore = useBalanceStore();
 const projectStore = useProjectStore();
@@ -17,17 +22,14 @@ const props = defineProps({
 const dialogManager = useDialogManager();
 const transfer = ref(props.transfer);
 
-const formatDate = (dateString) =>{
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ru-RU',{year: 'numeric', month: 'numeric', day: 'numeric',}).format(date);
-}
 
-const deleteTransfer = async () => {
-    const result = await balanceStore.deleteTransfer(transfer.projectId, transfer.id);
+const deleteTransfer = confirmManager.confirmDelete(async () => {
+    const result = await balanceStore.deleteTransfer(transfer.value.projectId, transfer.value.id);
     if(result.status === "success"){
-        emit('deleteTransfer', transfer.value.id)
+        emit('deleteTransfer', transfer.value.id);
+        toastManager.show("Transfer deleted!");
     }
-};
+});
 
 const openEditForm = ()=>{
     dialogManager.openDialog(EditTransferModalView, {
@@ -44,12 +46,11 @@ const openEditForm = ()=>{
 <template>
     <div class="flex items-center justify-start py-2">
         <div class="mr-2">
-            <img src="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" width="40" height="40" 
-            class="border p-0.5 rounded-full border-indigo-800">
+            <BaseAvatar :avatar="transfer.User.avatar" :firstName="transfer.User.firstName"/>
         </div>
         <div class="flex flex-col w-48 mr-1 items-start justify-start">
             <h3 class="text-sm">
-                <span class="mr-2 text-xs font-bold"> {{ formatDate(transfer.transferredAt) }}</span>
+                <span class="mr-2 text-xs font-bold"> {{ $formatDate(transfer.transferredAt) }}</span>
             </h3>
             <p class="text-xs text-slate-500 overflow-hidden">
                 <span class="font-light">{{ transfer.fromStorage.name }} <i class="pi pi-arrow-right text-xxs text-green-900" ></i> {{ transfer.toStorage.name }}</span>

@@ -10,7 +10,9 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
+import { useToastManger } from '@/composables/toaster';
 
+const toastManager = useToastManger();
 const emit = defineEmits(['add-category'])
 const projectStore = useProjectStore()
 const balanceStore = useBalanceStore()
@@ -37,6 +39,7 @@ onUpdated(()=>{
 const onAddCategory = handleSubmit(async (values) => {
     const result = await balanceStore.addExpenseCategory(projectStore.currentProject.Project.id, values);
     emit('add-category', result);
+    toastManager.show("Category added!");
 });
 
 const currentNewMonthLimit = computed(() => {
