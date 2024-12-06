@@ -1,23 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ExpensesView from '@/views/expenses/ExpensesView.vue'
-import UserProfileView from '@/views/profile/UserProfileView.vue'
-import ProjectCurrencyListView from '@/views/projects/ProjectCurrencyListView.vue'
-import ProjectUserListView from '@/views/projects/ProjectUserListView.vue'
-import ProjectSettingsView from '@/views/projects/ProjectSettingsView.vue'
-import StatisticExpensesListView from '@/views/statistic/StatisticExpensesListView.vue'
-import StatisticDashboardView from '@/views/statistic/StatisticDashboardView.vue'
-import BalanceDepositListView from '@/views/balance/DepositListView.vue'
-import BalanceStorageListView from '@/views/balance/StorageListView.vue'
-import ExpensesLimitListView from '@/views/expenses/ExpensesLimitListView.vue'
-import ExpenseListView from '@/views/expenses/ExpenseListView.vue'
-import BalanceView from '@/views/balance/BalanceView.vue'
-import BalanceTransferListView from '@/views/balance/TransferListView.vue'
-import ProjectListView from '@/views/projects/ProjectListView.vue'
+import ExpensesView from '@/views/expenses/ExpensesPage.vue'
+import UserProfileView from '@/views/profile/UserProfile.vue'
+import ProjectUserListView from '@/views/projects/users/ProjectUserList.vue'
+import ProjectSettingsView from '@/views/projects/ProjectSettings.vue'
+import StatisticExpensesListView from '@/views/statistic/StatisticExpenseList.vue'
+import StatisticDashboardView from '@/views/statistic/StatisticDashboard.vue'
+import BalanceDepositListView from '@/views/balance/deposits/DepositList.vue'
+import BalanceStorageListView from '@/views/balance/storages/StorageList.vue'
+import ExpensesLimitListView from '@/views/expenses/limits/ExpenseLimitList.vue'
+import ExpenseListView from '@/views/expenses/ExpenseList.vue'
+import BalanceView from '@/views/balance/BalancePage.vue'
+import BalanceTransferListView from '@/views/balance/transfers/TransferList.vue'
+import ProjectListView from '@/views/projects/ProjectList.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import { useAuthStore } from '@/stores/auth';
 import SignUpView from '@/views/auth/SignUpView.vue'
-import SecuritySettingsView from '@/views/profile/SecuritySettingsView.vue'
-import ProfileSettingsView from '@/views/profile/ProfileSettingsView.vue'
+import SecuritySettingsView from '@/views/profile/SecuritySettings.vue'
+import ProfileSettingsView from '@/views/profile/ProfileSettings.vue'
 
 
 const router = createRouter({
@@ -102,10 +101,6 @@ const router = createRouter({
         { 
           path: ':id/users',
           component: ProjectUserListView, //list of users with CRUD features
-        },
-        { 
-          path: ':id/currency',
-          component: ProjectCurrencyListView, //list of currency with CRUD features
         },
       ]
     },

@@ -2,7 +2,7 @@
 import Button from "primevue/button"
 import {useProjectStore} from "@/stores/project"
 import { ref} from 'vue';
-import EditProjectModalView from "./EditProjectModalView.vue";
+import EditProjectModalView from "@/views/projects/EditProjectForm.vue";
 import { useDialogManager } from "@/composables/dialog";
 import BaseAvatar from "@/components/BaseAvatar.vue";
 

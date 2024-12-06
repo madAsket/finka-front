@@ -73,7 +73,9 @@ const onEdit = handleSubmit(async (values) => {
                 <Message v-if="errors.description"  size="small" severity="error" variant="simple">{{ errors.description }}</Message>
             </div>
             <div class="field">
-                <Select name="category" v-model="category" :options="categories" :highlightOnSelect="false" 
+                <Select 
+                class="h-full"
+                name="category" v-model="category" :options="categories" :highlightOnSelect="false" 
                 optionLabel="name" optionValue="id" placeholder="Select category" fluid
                 :class="{ 'p-invalid': errors.category }" >
                 </Select>
@@ -86,7 +88,9 @@ const onEdit = handleSubmit(async (values) => {
                     <Message v-if="errors.expensedAt"  size="small" severity="error" variant="simple">{{ errors.expensedAt }}</Message>
                 </div>
                 <div class="field">
-                    <Select  name="spender" v-model="spender" :options="users" :highlightOnSelect="false" 
+                    <Select  
+                    class="h-full"
+                    name="spender" v-model="spender" :options="users" :highlightOnSelect="false" 
                     optionLabel="firstName" optionValue="id" fluid
                     :class="{ 'p-invalid': errors.spender }" >
                     </Select>
@@ -96,7 +100,7 @@ const onEdit = handleSubmit(async (values) => {
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Save" type="submit" autofocus />
+            <Button label="Save" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

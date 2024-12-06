@@ -6,8 +6,8 @@ import Chip from "primevue/chip"
 import Button from "primevue/button"
 import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
-import AddProjectModalView from './AddProjectModalView.vue';
-import ProjectItemView from './ProjectItemView.vue';
+import AddProjectModalView from '@/views/projects/AddProjectForm.vue';
+import ProjectItemView from '@/views/projects/ProjectItem.vue';
 
 const projectStore = useProjectStore();
 const authStore = useAuthStore();

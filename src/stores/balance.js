@@ -13,7 +13,7 @@ export const useBalanceStore = defineStore({
         sortedExpenses: (state) => {
             return [...state.expenses].sort((a,b)=>{
                 return new Date(a.expensedAt) - new Date(b.expensedAt);
-            })
+            });
         }
     },
     actions: {

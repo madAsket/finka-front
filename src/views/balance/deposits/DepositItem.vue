@@ -4,7 +4,7 @@ import Button from "primevue/button"
 import { useBalanceStore } from "@/stores/balance";
 import { ref } from "vue";
 import { useProjectStore } from "@/stores/project";
-import EditDepositModalView from "./EditDepositModalView.vue";
+import EditDepositModalView from "@/views/balance/deposits/EditDepositForm.vue";
 import { useDialogManager } from "@/composables/dialog";
 import BaseAvatar from "@/components/BaseAvatar.vue";
 import { useToastManger } from '@/composables/toaster';

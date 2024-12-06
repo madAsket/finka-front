@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import Button from "primevue/button"
 import Tabs from "primevue/tabs"
 import Tab from "primevue/tab"
 import TabList from "primevue/tablist"

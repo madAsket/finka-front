@@ -77,7 +77,7 @@ const onEdit = handleSubmit(async (values) => {
             </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Save" type="submit" autofocus />
+            <Button label="Save" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

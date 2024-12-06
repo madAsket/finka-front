@@ -71,7 +71,7 @@ const currentNewMonthLimit = computed(() => {
             </div>
             <div class="flex justify-end">
                 <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
-                <Button label="Add" type="submit" autofocus />
+                <Button label="Add" class="ml-2" type="submit" autofocus />
             </div>
         </form>
     </Dialog>    

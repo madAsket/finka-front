@@ -2,9 +2,9 @@
 import Button from "primevue/button"
 import { useProjectStore } from "@/stores/project";
 import { useDialogManager } from "@/composables/dialog";
-import TransferModalView from "./TransferModalView.vue";
-import AddDepositModalView from "./AddDepositModalView.vue";
-import EditStorageModalView from "./EditStorageModalView.vue";
+import TransferModalView from "@/views/balance/transfers/AddTransferForm.vue";
+import AddDepositModalView from "@/views/balance/deposits/AddDepositForm.vue";
+import EditStorageModalView from "@/views/balance/storages/EditStorageForm.vue";
 import { onUpdated } from "vue";
 
 const emit = defineEmits(['makeTransfer', 'makeDeposit']);

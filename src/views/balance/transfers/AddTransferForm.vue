@@ -1,7 +1,5 @@
 <script setup>
-import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
 import Message from 'primevue/message';
 import Select from 'primevue/select'
 import InputNumber from 'primevue/inputnumber'
@@ -27,8 +25,8 @@ const schema = yup.object({
   toStorage: yup.number().required().label('Target storage'),
   transferredAt: yup.date().required().label('Transfer date'),
   transferrer: yup.number().required().label('Transferror'),
-  transferredAmount: yup.number().required().max(9999999999999999999.9999999999).label('Tranfsef amount'),
-  receivedAmount: yup.number().required().max(9999999999999999999.9999999999).label('Recieve amount'),
+  transferredAmount: yup.number().required().min(0.0000000001,"Min 0.0000000001").max(9999999999999999999.9999999999).label('Tranfsef amount'),
+  receivedAmount: yup.number().required().min(0.0000000001,"Min 0.0000000001").max(9999999999999999999.9999999999).label('Recieve amount'),
 }).noUnknown(true);
 
 const { defineField, handleSubmit,setErrors, setValues, resetForm,errors } = useForm({
@@ -114,7 +112,9 @@ watch(toStorage, (newValue)=>{
                 <h1 class="text-lg">From storage</h1>
                 <div class="grid grid-cols-2 gap-1 mb-2">
                     <div class="field w-50">
-                        <Select name="fromStorage" v-model="fromStorage" :options="fromStorages" :highlightOnSelect="false" 
+                        <Select 
+                        class="h-full"
+                        name="fromStorage" v-model="fromStorage" :options="fromStorages" :highlightOnSelect="false" 
                         optionLabel="name" optionValue="id" placeholder="Select storage" fluid
                         :class="{ 'p-invalid': errors.fromStorage }"  >
                         </Select>
@@ -136,7 +136,9 @@ watch(toStorage, (newValue)=>{
                 <h1 class="text-lg">To storage</h1>
                 <div class="grid grid-cols-2 gap-1 mb-2">
                     <div class="field">
-                        <Select name="toStorage" v-model="toStorage" :options="toStorages" :highlightOnSelect="false" 
+                        <Select 
+                        class="h-full"
+                        name="toStorage" v-model="toStorage" :options="toStorages" :highlightOnSelect="false" 
                         optionLabel="name" optionValue="id" placeholder="Select storage" fluid
                         :class="{ 'p-invalid': errors.toStorage }"  >
                         </Select>
@@ -161,7 +163,9 @@ watch(toStorage, (newValue)=>{
                     <Message v-if="errors.transferredAt"  size="small" severity="error" variant="simple">{{ errors.transferredAt }}</Message>
                 </div>
                 <div class="field">
-                    <Select  name="transferrer" v-model="transferrer" :options="users" :highlightOnSelect="false" 
+                    <Select  
+                    class="h-full"
+                    name="transferrer" v-model="transferrer" :options="users" :highlightOnSelect="false" 
                     optionLabel="firstName" optionValue="id" fluid
                     :class="{ 'p-invalid': errors.transferrer }" >
                     </Select>
@@ -171,7 +175,7 @@ watch(toStorage, (newValue)=>{
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Transfer" type="submit" autofocus />
+            <Button label="Transfer" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

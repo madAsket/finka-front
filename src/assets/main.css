@@ -32,6 +32,11 @@
     --overlay-background: var(--p-surface-900);
 }
 
+/* fix different select size */
+.p-select{
+    max-height: 43.59px;
+}
+
 .p-menu-end{
     position: absolute;
     bottom:5px;
@@ -52,4 +57,7 @@
 .p-menubar-separator{
     border-width:1px;
     border-color: black;
+}
+.p-menu-item.p-focus .p-menu-item-content {
+    background:#fff;
 }

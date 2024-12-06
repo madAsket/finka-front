@@ -1,11 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import DataTable from "primevue/datatable"
-import Column from "primevue/column"
-import Chip from "primevue/chip"
 import Button from "primevue/button"
-import InviteUserModalView from './InviteUserModalView.vue';
+import InviteUserModalView from './InviteUserForm.vue';
 import {useProjectStore} from "@/stores/project"
+import ProjectUserItem from "@/views/projects/users/ProjectUserItem.vue"
 
 const projectStore = useProjectStore();
 
@@ -37,7 +35,10 @@ const addUser = (newUser) => {
     </div>
     <InviteUserModalView v-model:visible="isInviteModalShown" @add-user="addUser"/>
     <div>
-        <DataTable :value="users" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
+        <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-96">
+            <ProjectUserItem :user="item" v-for="item in users" :key="item.id" />
+        </div>
+        <!-- <DataTable :value="users" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
             <Column field="firstName" header="Username">
                 <template #body="{ data }">
                     <Chip :pt="{image:{style:'width:20px;height:20px'}}" :label="data.firstName" image="https://primefaces.org/cdn/primevue/images/avatar/xuxuefeng.png" />
@@ -50,7 +51,7 @@ const addUser = (newUser) => {
                 </template>
             </Column>
             <Column field="email" header="Email" class="max-w-40 font-bold"></Column>
-        </DataTable>
+        </DataTable> -->
     </div>
 </div>
 </template>

@@ -5,7 +5,7 @@ import { useBalanceStore } from "@/stores/balance";
 import { ref } from "vue";
 import { useDialogManager } from "@/composables/dialog";
 import { useProjectStore } from "@/stores/project";
-import EditExpenseCategoryModalView from "./EditExpenseCategoryModalView.vue";
+import EditExpenseCategoryModalView from "@/views/expenses/limits/EditExpenseCategoryForm.vue";
 
 const projectStore = useProjectStore();
 const props = defineProps({

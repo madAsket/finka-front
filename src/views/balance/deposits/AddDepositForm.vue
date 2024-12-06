@@ -1,12 +1,10 @@
 <script setup>
 import Button from 'primevue/button';
 import Select from 'primevue/select'
-import MultiSelect from "primevue/multiselect"
 import Message from 'primevue/message';
 import InputNumber from 'primevue/inputnumber'
 import { ref, onMounted, inject, watch } from 'vue';
 import DatePicker from 'primevue/datepicker'
-import Chip from 'primevue/chip'
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
@@ -27,7 +25,7 @@ const schema = yup.object({
   storage: yup.number().required().label('Storage'),
   depositedAt: yup.date().required().label('Desposit date'),
   author: yup.number().required().label('Author'),
-  amount: yup.number().nullable().min(0).max(9999999999999999999.9999999999).label('Amount'),
+  amount: yup.number().required().min(0.0000000001,"Min 0.0000000001").max(9999999999999999999.9999999999).label('Amount'),
 });
 
 const { defineField, handleSubmit,setErrors, setValues, resetForm,errors } = useForm({
@@ -105,7 +103,9 @@ watch(storage, ()=>{
     <form @submit="onAddDeposit">
         <div class="mb-4 flex flex-col gap-y-5">
             <div class="field">
-                <Select name="storage" v-model="storage" :options="storages" :highlightOnSelect="false" 
+                <Select 
+                class="h-full"
+                name="storage" v-model="storage" :options="storages" :highlightOnSelect="false" 
                 optionLabel="name" optionValue="id" placeholder="Select a Storage" fluid
                 :class="{ 'p-invalid': errors.storage }" >
                 </Select>
@@ -128,7 +128,9 @@ watch(storage, ()=>{
                     <Message v-if="errors.depositedAt"  size="small" severity="error" variant="simple">{{ errors.depositedAt }}</Message>
                 </div>
                 <div class="field">
-                    <Select  name="author" v-model="author" :options="users" :highlightOnSelect="false" 
+                    <Select 
+                    class="h-full"
+                    name="author" v-model="author" :options="users" :highlightOnSelect="false" 
                     optionLabel="firstName" optionValue="id" fluid
                     :class="{ 'p-invalid': errors.author }" >
                         <!-- <template #value="slotProps">
@@ -151,7 +153,7 @@ watch(storage, ()=>{
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Top up" type="submit" autofocus />
+            <Button label="Top up" class="ml-2" type="submit" autofocus />
         </div>
     </form> 
 </template>

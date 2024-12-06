@@ -5,7 +5,7 @@ import { useBalanceStore } from "@/stores/balance";
 import { ref } from "vue";
 import { useProjectStore } from "@/stores/project";
 import { useDialogManager } from "@/composables/dialog";
-import EditTransferModalView from "./EditTransferModalView.vue";
+import EditTransferModalView from "@/views/balance/transfers/EditTransferForm.vue";
 import BaseAvatar from "@/components/BaseAvatar.vue";
 import { useToastManger } from '@/composables/toaster';
 import { useConfirmManger } from "@/composables/confirmAction";
