@@ -52,7 +52,7 @@ const openEditForm = ()=>{
         <div class="mr-2">
             <BaseAvatar :avatar="deposit.User.avatar" :firstName="deposit.User.firstName"/>
         </div>
-        <div class="flex flex-col w-32 mr-1 items-start justify-start">
+        <div class="flex flex-col w-28 sm:w-40 mr-1 items-start justify-start">
             <h3 class="text-sm mb-0.5">
                 <span class="mr-2 text-xs font-bold"> {{ $formatDate(deposit.depositedAt) }}</span>
             </h3>
@@ -60,7 +60,7 @@ const openEditForm = ()=>{
                 <span class="font-light">{{ deposit.Storage.name }}</span>
             </p>
         </div>
-        <div class="flex items-start flex-col ml-auto w-32">
+        <div class="flex items-end mr-2 flex-col ml-auto w-28 sm:w-32">
             <p class="font-semibold text-sm text-green-800">
                 {{$convertCurrency(deposit.amount, deposit.Storage.currency, projectStore.currentProject.Project.currency)}}
             </p>

@@ -9,12 +9,12 @@ const items = ref([
         separator: true
     },
     {
-        label: 'Home',
+        label: 'Expenses',
         icon: 'pi pi-objects-column',
         route:"/"
     },
     {
-        label: 'Balance',
+        label: 'Assets',
         icon: 'pi pi-bitcoin',
         route:"/balance"
     },
@@ -24,7 +24,7 @@ const items = ref([
     //     route:"/statistic"
     // },
     {
-        label: 'Settings',
+        label: 'Projects',
         icon: 'pi pi-cog',
         route:"/projects"
     },
@@ -32,35 +32,34 @@ const items = ref([
 </script>
 
 <template>
-    <div class="justify-start grid">
-        <div class="min-w-24 max-w-24 h-screen overscroll-y-auto relative">
-            <div class="fixed p-4 min-w-24 max-w-24 h-full">
-                <Menu
-                :model="items" 
-                class="mbg-gray-300 h-full w-16 min-w-0 overflow-hidden rounded-lg relative">
-                    <template #start>
-                        <RouterLink to="/" exactActiveClass="logo-link-exact-active" activeClass="logo-link-active">
-                            <span class="inline-flex items-center px-1 pt-2">
-                                <img src="@/assets/logo-text.png" class="pt-1">
-                            </span>
-                        </RouterLink>
-                    </template>
-                    <template #item="{ item, props }">
-                        <RouterLink  :to="item.route" class="p-menu-item-link">
-                                <span :class="item.icon" />
-                        </RouterLink>
-                    </template>
-                    <template #end>
-                        <RouterLink 
-                        exactActiveClass="p-profile-exact-active" 
-                        activeClass="p-profile-active"
-                        to="/profile"  
-                        class="relative overflow-hidden w-full bg-transparent flex items-start ml-3 mb-2 rounded cursor-pointer transition-colors duration-200">
-                            <BaseAvatar class="hover:bg-slate-300" :avatar="auth.user.avatar" :firstName="auth.user.firstName"></BaseAvatar>
-                        </RouterLink>
-                    </template>
-                </Menu>
-            </div>
+    <div class="min-w-24 max-w-24 h-screen overscroll-y-auto relative menu-container">
+        <div class="fixed p-4 min-w-24 max-w-24 h-full menu-fix-wrapper">
+            <Menu
+            :model="items" 
+            class="mbg-gray-300 h-full w-16 min-w-0 overflow-hidden rounded-lg relative menu-block">
+                <template #start>
+                    <RouterLink to="/" exactActiveClass="logo-link-exact-active" activeClass="logo-link-active">
+                        <span class="inline-flex items-center px-1 pt-2">
+                            <img src="@/assets/logo-text.png" class="pt-1">
+                        </span>
+                    </RouterLink>
+                </template>
+                <template #item="{ item, props }">
+                    <RouterLink  :to="item.route" class="p-menu-item-link">
+                            <span :class="item.icon"></span>
+                            <p class="md:hidden text-xs text-gray-500">{{item.label}}</p>
+                    </RouterLink>
+                </template>
+                <template #end>
+                    <RouterLink 
+                    exactActiveClass="p-profile-exact-active" 
+                    activeClass="p-profile-active"
+                    to="/profile"  
+                    class="relative overflow-hidden w-full bg-transparent flex items-start md:ml-3 ml-2 mb-2 rounded cursor-pointer transition-colors duration-200">
+                        <BaseAvatar class="hover:bg-slate-300" :avatar="auth.user.avatar" :firstName="auth.user.firstName"></BaseAvatar>
+                    </RouterLink>
+                </template>
+            </Menu>
         </div>
     </div>
 </template>
@@ -73,4 +72,5 @@ const items = ref([
         background-color: #f1f5f9;
         border-radius:100%;
     }
+  
 </style> 

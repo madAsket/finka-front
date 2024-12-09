@@ -90,7 +90,7 @@ const onFileSelect = async (data)=>{
         <div class="border-t pt-5">
           <h2 class="text-base/7 font-semibold text-gray-900">Change Avatar</h2>
           <div class="flex items-center gap-x-3 mt-5">
-            <BaseAvatar :size="{width:80,height:80}" :avatar="auth.user.avatar" :firstName="auth.user.firstName"></BaseAvatar>
+            <BaseAvatar :size="{width:60,height:60}" :avatar="auth.user.avatar" :firstName="auth.user.firstName"></BaseAvatar>
             <FileUpload accept="image/png,image/jpeg,image/jpg" :maxFileSize="1240000" mode="basic" @select="onFileSelect" 
             invalidFileSizeMessage="Invalid file size, file size should be smaller than 1MB."
             customUpload auto severity="secondary" class="p-button-outlined" />

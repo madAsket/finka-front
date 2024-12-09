@@ -48,12 +48,12 @@ const openEditForm = ()=>{
         <div class="mr-2">
             <BaseAvatar :avatar="transfer.User.avatar" :firstName="transfer.User.firstName"/>
         </div>
-        <div class="flex flex-col w-48 mr-1 items-start justify-start">
+        <div class="flex flex-col w-28 sm:w-40 mr-1 items-start justify-start">
             <h3 class="text-sm">
                 <span class="mr-2 text-xs font-bold"> {{ $formatDate(transfer.transferredAt) }}</span>
             </h3>
             <p class="text-xs text-slate-500 overflow-hidden">
-                <span class="font-light">{{ transfer.fromStorage.name }} <i class="pi pi-arrow-right text-xxs text-green-900" ></i> {{ transfer.toStorage.name }}</span>
+                <span class="font-light">{{ transfer.fromStorage.name }} <i class="pi pi-arrow-right text-xxs text-green-900" ></i><br/> {{ transfer.toStorage.name }}</span>
             </p>
         </div>
         <div class="flex items-center flex-col ml-auto w-32">

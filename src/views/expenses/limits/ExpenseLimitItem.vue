@@ -34,7 +34,7 @@ const openEditForm = ()=>{
                 <span class="mr-2 text-xs font-bold">{{ expenseLimit.name }}</span>
             </h3>
         </div>
-        <div class="flex items-start flex-col ml-auto w-32">
+        <div class="flex items-end mr-2 flex-col ml-auto w-32">
             <p class="font-semibold text-xs">
                 <span class="text-red-800">{{ $formatCurrency(expenseLimit.spent || 0, projectStore.currentProject.Project.currency) }}</span> / <span class="text-green-800">{{ $formatCurrency(expenseLimit.limit.limit, projectStore.currentProject.Project.currency) }}</span>
             </p>

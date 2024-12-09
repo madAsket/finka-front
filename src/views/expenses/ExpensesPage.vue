@@ -1,8 +1,6 @@
 <script setup>
+import BasePageMenu from '@/components/BasePageMenu.vue';
 import { ref, onMounted } from 'vue';
-import Tabs from "primevue/tabs"
-import Tab from "primevue/tab"
-import TabList from "primevue/tablist"
 
 const tabItems = ref([
     {
@@ -19,21 +17,8 @@ const tabItems = ref([
 </script>
 
 <template>
-    <div class="container">
-        <div class="mb-5 text-xs flex justify-start">
-            <Tabs value="/">
-                <TabList>
-                    <Tab v-for="tab in tabItems" :key="tab.label" :value="tab.routeName"  
-                    :to="{name:tab.routeName}" as="router-link"
-                    exactActiveClass="p-tab-active">
-                        <div class="flex items-center gap-2 text-inherit">
-                            <i :class="tab.icon" />
-                            <span>{{ tab.label }}</span>
-                        </div>
-                    </Tab>
-                </TabList>
-            </Tabs>
-        </div>
-        <RouterView></RouterView>
+    <div>
+        <BasePageMenu :tabItems="tabItems" />
+        <RouterView class="sm:px-4 px-2"></RouterView>
     </div>
 </template>

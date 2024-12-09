@@ -1,0 +1,12 @@
+FROM node:20.12.1
+WORKDIR /app
+COPY package.json .
+COPY package-lock.json .
+COPY tailwind.config.js .
+COPY vite.config.js .
+COPY postcss.config.js .
+COPY jsconfig.json .
+COPY index.html .
+COPY .env .
+RUN npm install
+COPY ./src /app/src

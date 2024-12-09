@@ -12,6 +12,7 @@ import { useDialogManager } from '@/composables/dialog';
 import DepositItemView from '@/views/balance/deposits/DepositItem.vue';
 import BaseListSkeleton from '@/components/BaseListSkeleton.vue';
 import BaseEmptyList from '@/components/BaseEmptyList.vue';
+import BaseListHeader from '@/components/BaseListHeader.vue';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -64,18 +65,22 @@ function showDepositModal(){
 </script>
 <template>
 <div>
-    <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Deposits</h1>
-        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
-    </div>
+    <BaseListHeader>
+        <template #title>
+            Deposits
+        </template>
+        <template #subtitle>
+            <b>Project:</b> {{projectStore.currentProject.Project.name}}
+        </template>
+        <template #button>
+            <Button v-if="!resLoaded || (resLoaded && deposits.length)" 
+            @click="showDepositModal" class="mr-2" icon="pi pi-credit-card" label="Top up"  size="small" />
+        </template>
+    </BaseListHeader>
     <div>
-        <Button v-if="!resLoaded || (resLoaded && deposits.length)" @click="showDepositModal" class="mr-2 mb-5" icon="pi pi-credit-card" label="Top up"  size="small" />
-    </div>
-    <div>
-        <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-xl">
+        <div class="divide-indigo-100 divide-y flex flex-col content-start">
         <!-- <BaseListSkeleton v-if="!resLoaded"></BaseListSkeleton> -->
         <BaseEmptyList v-if="resLoaded && !deposits.length" 
-        class="max-w-2xl" 
         buttonLabel="Add deposit"
         :buttonAction="showDepositModal">
             <template #title>You don't have any deposits yet</template>

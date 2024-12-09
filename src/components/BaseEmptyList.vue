@@ -13,7 +13,7 @@
     })
 </script>
 <template>
-<Card>
+<Card class="mt-5 w-full">
     <template #title><slot name="title"></slot></template>
     <template #subtitle><slot name="subtitle"></slot></template>
     <template #content>

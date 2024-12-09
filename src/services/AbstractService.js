@@ -11,7 +11,7 @@ class AbstractService {
             data.status = response.data.status;
             return data;
         }catch(e){
-            return e.response.data;
+            return e.response?.data ? e.response.data : e;
         }
     }
 }

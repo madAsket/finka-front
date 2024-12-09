@@ -7,6 +7,7 @@ import { useBalanceStore } from '@/stores/balance';
 import StorageItemView from './StorageItem.vue';
 import BaseEmptyList from '@/components/BaseEmptyList.vue';
 import BaseListSkeleton from '@/components/BaseListSkeleton.vue';
+import BaseListHeader from '@/components/BaseListHeader.vue';
 
 const storages = ref([])
 const projectStore = useProjectStore()
@@ -52,22 +53,24 @@ function showAddStorageCategoryModal(){
 <template>
 
 <div>
-    <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Financial storage</h1>
-        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
-    </div>
+    <BaseListHeader>
+        <template #title>
+            Financial storage
+        </template>
+        <template #subtitle>
+            <b>Project:</b> {{projectStore.currentProject.Project.name}}
+        </template>
+        <template #button>
+            <Button v-if="!resLoaded || (resLoaded && storages.length)" 
+            @click="showAddStorageCategoryModal"  
+            class="mr-2" icon="pi pi-plus" label="Add storage"  size="small" />
+        </template>
+    </BaseListHeader>
+    <AddStorageModalView v-model:visible="isAddStorageModalShown" @add-storage="addStorage"/>
     <div>
-        <Button v-if="!resLoaded || (resLoaded && storages.length)" @click="showAddStorageCategoryModal"  class="mr-2 mb-5" icon="pi pi-plus" label="Add storage"  size="small" />
-        <AddStorageModalView v-model:visible="isAddStorageModalShown" @add-storage="addStorage"/>
-    </div>
-    <div>
-        <!-- TODO: Currencies exchange information -->
-    </div>
-    <div>
-        <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-lg">
+        <div class="divide-indigo-100 divide-y flex flex-col content-start">
             <!-- <BaseListSkeleton v-if="!resLoaded"></BaseListSkeleton> -->
-            <BaseEmptyList v-if="resLoaded && !storages.length" 
-            class="max-w-2xl" 
+            <BaseEmptyList v-if="resLoaded && !storages.length"
             buttonLabel="Add storage"
             :buttonAction="showAddStorageCategoryModal">
                 <template #title>You don't have any storages yet</template>

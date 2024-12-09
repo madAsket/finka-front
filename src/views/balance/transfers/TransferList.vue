@@ -7,6 +7,7 @@ import { useBalanceStore } from '@/stores/balance';
 import { useDialogManager } from '@/composables/dialog';
 import TransferItemView from '@/views/balance/transfers/TransferItem.vue';
 import BaseEmptyList from '@/components/BaseEmptyList.vue';
+import BaseListHeader from '@/components/BaseListHeader.vue';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -45,18 +46,21 @@ const deleteTransfer = async (transferId) => {
 </script>
 <template>
 <div>
-    <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Transfers</h1>
-        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
-    </div>
-    <div>
-        <Button v-if="!resLoaded || (resLoaded && transfers.length)" 
-        @click="showTransferModal" class="mr-2 mb-5" icon="pi pi-arrow-right-arrow-left" label="Make transfer"  size="small" />
-    </div>
-    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-xl">
+    <BaseListHeader>
+        <template #title>
+            Transfers
+        </template>
+        <template #subtitle>
+            <b>Project:</b> {{projectStore.currentProject.Project.name}}
+        </template>
+        <template #button>
+            <Button v-if="!resLoaded || (resLoaded && transfers.length)" 
+            @click="showTransferModal" class="mr-2" icon="pi pi-arrow-right-arrow-left" label="Make transfer"  size="small" />
+        </template>
+    </BaseListHeader>
+    <div class="divide-indigo-100 divide-y flex flex-col content-start">
         <!-- <BaseListSkeleton v-if="!resLoaded"></BaseListSkeleton> -->
         <BaseEmptyList v-if="resLoaded && !transfers.length" 
-        class="max-w-2xl" 
         buttonLabel="Add transfer"
         :buttonAction="showTransferModal">
             <template #title>You don't have any transfers yet</template>

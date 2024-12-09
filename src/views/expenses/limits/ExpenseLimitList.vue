@@ -6,6 +6,7 @@ import {useProjectStore} from "@/stores/project"
 import { useBalanceStore } from '@/stores/balance';
 import ExpenseLimitItemView from '@/views/expenses/limits/ExpenseLimitItem.vue';
 import BaseEmptyList from '@/components/BaseEmptyList.vue';
+import BaseListHeader from '@/components/BaseListHeader.vue';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -32,23 +33,26 @@ const addCategory = (newCategory) => {
 <template>
 
 <div>
-    <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Current month limits</h1>
-        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}.</p>
-    </div>
-    <div>
-        <Button v-if="resLoaded && limits.length"  
-        class="mr-2 mb-5"
+    <BaseListHeader>
+        <template #title>
+            Current month limits
+        </template>
+        <template #subtitle>
+            <b>Project:</b> {{projectStore.currentProject.Project.name}}
+        </template>
+        <template #button>
+            <Button v-if="resLoaded && limits.length"  
+        class="mr-2"
         @click="showAddExpenseCategoryModal" 
         icon="pi pi-plus" 
         label="Add category"  
         size="small" />
-    </div>
+        </template>
+    </BaseListHeader>
     <AddExpenseCategoryModalView v-model:visible="isAddExpenseCategoryModalShown" @add-category="addCategory" />
 
-    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-2xl">
-        <BaseEmptyList v-if="resLoaded && !limits.length" 
-        class="max-w-2xl" 
+    <div class="divide-indigo-100 divide-y flex flex-col content-start">
+        <BaseEmptyList v-if="resLoaded && !limits.length"
         buttonLabel="Add category"
         :buttonAction="showAddExpenseCategoryModal">
             <template #title>You don't have any limit category yet</template>
@@ -57,27 +61,6 @@ const addCategory = (newCategory) => {
         </BaseEmptyList>
         <ExpenseLimitItemView v-for="item in limits" :key="item.id"
         :expenseLimit="item" />
-    </div>
-    <div>
-        <!-- <DataTable :value="limits" stripedRows  class="text-xs" tableStyle="max-width: 40rem">
-            <Column field="category.label" header="Category"  >
-                <template #body="{ data }">
-                    <Chip :label="data.name"></Chip>
-                </template>
-            </Column>
-            <Column field="amount" header="Spent / Limit" >
-                <template #body="{ data }">
-                    {{ $formatCurrency(data.spent || 0, projectStore.currentProject.Project.currency) }} / <b>{{ $formatCurrency(data.limit.limit, projectStore.currentProject.Project.currency) }}</b>
-                </template>
-            </Column>
-            <Column header="Actions">
-                <template #body="{ data }">
-                    <div class="grid grid-cols-1">
-                        <Button class="w-7 h-7 text-slate-500" size="small" icon="pi pi-pencil" rounded outlined aria-label="Edit" />
-                    </div>
-                </template>
-            </Column>
-        </DataTable> -->
     </div>
 </div>
 </template>

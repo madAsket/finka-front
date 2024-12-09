@@ -46,16 +46,22 @@ const openEditForm = ()=>{
         <div class="mr-2">
             <BaseAvatar :avatar="model.User.avatar" :firstName="model.User.firstName"/>
         </div>
-        <div class="flex flex-col w-80 mr-1 items-start justify-start">
-            <h3 class="text-sm  mb-1">
-                <span class="mr-2 text-xs font-bold">{{ $formatDate(model.expensedAt) }} <span class="text-xs font-semibold text-slate-500">from {{ model.Storage.name }}</span></span>
-            </h3>
-            <p class="text-xs text-slate-500 overflow-hidden">
-                <Chip :pt="{label:{class:'overflow-hidden max-h-4'}}" :label="model.ExpenseCategory.name" class="bg-indigo-50 h-5 text-xs max-w-32 overflow-hidden"></Chip>
-                <span class="font-light ml-1">{{ model.description }}</span>
-            </p>
+        <div class="flex flex-col sm:w-40 w-32 items-start justify-start">
+            <span class="text-xs font-bold">
+                <span class="pr-1">{{ $formatDate(model.expensedAt) }}</span> 
+                <span class="max-sm:inline-block text-xs font-semibold text-slate-500">from {{ model.Storage.name }}</span>
+            </span>
+            <div class="text-xs max-sm:text-2xs text-slate-500 overflow-hidden">
+                <span class="font-light max-sm:hidden">{{ model.description }}</span>
+                <p>
+                    <Chip :pt="{label:{class:'overflow-hidden max-h-4'}}" 
+                    :label="model.ExpenseCategory.name"
+                    class="bg-indigo-50 h-5 max-w-32 overflow-hidden"></Chip>
+                </p>
+
+            </div>
         </div>
-        <div class="flex items-start flex-col ml-auto w-32">
+        <div class="flex items-end ml-auto mr-2 flex-col w-28">
             <p class="font-semibold text-sm text-pink-800">-{{ $convertCurrency(model.amount, model.Storage.currency, baseCurrency) }}</p>
             <p  class="font-semibold text-xs text-gray-800" v-if="projectStore.currentProject.Project.currency !== model.Storage.currency">
                 {{ $formatCurrency(model.amount, model.Storage.currency) }}

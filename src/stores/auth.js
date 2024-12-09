@@ -15,6 +15,7 @@ export const useAuthStore = defineStore({
         updateUserState(data){
             this.user = data.user;
             if(!data.user){
+                // console.log("HERE");
                 this.token = null;
                 localStorage.setItem('authToken', null);
             }else{
@@ -37,7 +38,8 @@ export const useAuthStore = defineStore({
             return data;
         },
         async syncCurrentUser(){
-            this.updateUserState(await AuthService.syncCurrentUser());
+            const result = await AuthService.syncCurrentUser();
+            this.updateUserState(result);
         },
         async changePassword(creds){
             return await AuthService.changePassword(creds);

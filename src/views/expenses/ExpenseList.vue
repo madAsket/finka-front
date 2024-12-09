@@ -6,6 +6,7 @@ import ExpenseItem from '@/views/expenses/ExpenseItem.vue';
 import BaseEmptyList from '@/components/BaseEmptyList.vue';
 import AddExpenseForm from '@/views/expenses/AddExpenseForm.vue';
 import { useDialogManager } from "@/composables/dialog";
+import BaseListHeader from '@/components/BaseListHeader.vue';
 
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
@@ -28,13 +29,16 @@ const openExpenseForm = ()=>{
 </script>
 <template>
 <div>
-    <div class="mb-5">
-        <h1 class="text-surface-700  font-bold text-2xl">Current month expenses</h1>
-        <p class="text-xs"><b>Project:</b> {{projectStore.currentProject.Project.name}}</p>
-    </div>
-  
-    <div class="divide-indigo-100 divide-y flex flex-col content-start min-w-fit max-w-2xl">
-        <BaseEmptyList v-if="resLoaded && !balanceStore.sortedExpenses.length" class="max-w-2xl" buttonLabel="Add expense" :buttonAction="openExpenseForm">
+    <BaseListHeader>
+        <template #title>
+            Current month expenses
+        </template>
+        <template #subtitle>
+            <b>Project:</b> {{projectStore.currentProject.Project.name}}
+        </template>
+    </BaseListHeader>
+    <div class="divide-indigo-100 divide-y flex flex-col content-start">
+        <BaseEmptyList v-if="resLoaded && !balanceStore.sortedExpenses.length" buttonLabel="Add expense" :buttonAction="openExpenseForm">
             <template #title>You don't have any expenses yet</template>
             <template #subtitle></template>
             <template #content>You can create one here. Lets do it now!</template>

@@ -6,7 +6,7 @@ export function useToastManger() {
 
     const show = (msg)=>{
         toast.add({ 
-            severity: 'contrast', 
+            severity: 'secondary', 
             summary: 'Success', 
             detail: msg, 
             life: 2000 

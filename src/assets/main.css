@@ -61,3 +61,131 @@
 .p-menu-item.p-focus .p-menu-item-content {
     background:#fff;
 }
+
+
+@media only screen and (max-width: 768px) {
+    .menu-container{
+        order:1;
+        width:100%;
+        max-width: 100%;
+        height:0px;
+        max-height: 90px;
+        z-index: 20;
+        position: relative;
+        justify-self: end;
+        align-self: end;
+    }
+    .menu-container .menu-fix-wrapper{
+        bottom:0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 60px;
+        box-sizing: border-box;
+        padding: 0;
+        backdrop-filter: blur(3px);
+    }
+    .menu-container .menu-fix-wrapper .menu-block{
+        border-bottom: 0;
+        width:100%;
+        border-radius:0;
+        opacity: 0.8;
+        background-color: rgb(243 244 246);
+    }
+    .menu-block{
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .p-menu-list{
+        flex-direction: row;
+        padding: 0;
+        margin: auto;
+        justify-self: center;
+        align-self: center;
+        gap:5px;
+    }
+    .p-menu-list .p-menu-separator{
+        display: none;
+    }
+    .p-menu-item-content{
+        width:auto;
+        height:auto;
+    }
+    .p-menu-item-content .p-menu-item-link{
+        width: 70px !important;
+        height: 50px !important;
+        flex-direction: column;
+    }
+    .p-menu-item-link.router-link-active{
+        background-color: unset !important;
+        border-radius: 0 !important;
+
+    }
+    .p-menu-item-link.router-link-active span{
+        color:#714ab9;
+    }
+    .p-menu-item-link.router-link-active p{
+        color:#714ab9;
+        font-weight:bold;
+    }
+    .p-menu-item-content:hover{
+        background-color: unset !important;
+    }
+    .p-menu-item.p-focus .p-menu-item-content {
+        background-color: unset !important;
+    }
+    .p-menu-start{
+       width:50px;
+       height:50px;
+       position:absolute;
+       right:5px;
+    }
+    .p-menu-end{
+        position: absolute;
+        padding: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .p-tablist .p-tablist-content{
+        @apply text-2xs;
+    }
+
+
+    .p-toast{
+        width:100%;
+        margin:0;
+        left:0 !important;
+        top:0 !important;
+
+    }
+    .p-toast-message{
+        border-radius:0;
+        border:0;
+    }
+
+}
+.page-menu{
+    position: sticky;
+    top:0;
+    z-index: 10;
+}
+
+.page-menu-bg-wrapper{
+    backdrop-filter: blur(6px);
+}
+.page-menu-bg{
+    opacity: 0.8;
+}
+
+.blur-bg{
+    width:100%;
+    height: 100%;
+    position:absolute;
+    backdrop-filter: blur(6px);
+    top:0;
+    left:0;
+    z-index: -1;
+    background:rgba(255,255,255, 0.5);
+}

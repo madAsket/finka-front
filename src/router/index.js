@@ -21,6 +21,10 @@ import ProfileSettingsView from '@/views/profile/ProfileSettings.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -99,7 +103,8 @@ const router = createRouter({
           component: ProjectListView, //list of users with CRUD features
         },
         { 
-          path: ':id/users',
+          path: 'users',
+          name:"projectUsers",
           component: ProjectUserListView, //list of users with CRUD features
         },
       ]

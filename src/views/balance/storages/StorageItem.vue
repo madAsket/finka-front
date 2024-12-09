@@ -61,7 +61,7 @@ const openEditForm = ()=>{
 </script>
 <template>
     <div class="flex items-center justify-start py-2">
-        <div class="flex flex-col w-32 mr-1 items-start justify-start">
+        <div class="flex flex-col w-28 sm:w-40 mr-1 items-start justify-start">
             <h3 class="text-sm  mb-1">
                 <span class="mr-2 text-xs font-bold"> {{ storage.name }}</span>
             </h3>
@@ -69,7 +69,7 @@ const openEditForm = ()=>{
                 <span class="font-light">{{ storage.currency }}</span>
             </p>
         </div>
-        <div class="flex items-start justify-center flex-col ml-auto w-32">
+        <div class="flex items-end mr-2 justify-center flex-col ml-auto w-32">
             <p class="font-semibold text-sm text-green-800" :class="{'!text-pink-800': Number(storage.balance) === 0}">
                 {{$convertCurrency(storage.balance, storage.currency, projectStore.currentProject.Project.currency)}}
             </p>
