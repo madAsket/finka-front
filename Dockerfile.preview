@@ -7,6 +7,7 @@ COPY vite.config.js .
 COPY postcss.config.js .
 COPY jsconfig.json .
 COPY index.html .
+COPY public .
 COPY .env .
 RUN npm install
 COPY ./src /app/src
