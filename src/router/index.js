@@ -1,32 +1,40 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import UserProfileView from '@/views/profile/UserProfileView.vue'
-import ProjectExpencesTypeListView from '@/views/projects/ProjectExpencesTypeListView.vue'
-import ProjectCurrencyListView from '@/views/projects/ProjectCurrencyListView.vue'
-import ProjectUserListView from '@/views/projects/ProjectUserListView.vue'
-import ProjectsSettingsView from '@/views/projects/ProjectsSettingsView.vue'
-import StatisticExpensesListView from '@/views/statistic/StatisticExpensesListView.vue'
-import StatisticDashboardView from '@/views/statistic/StatisticDashboardView.vue'
-import BalanceDepositListView from '@/views/balance/BalanceDepositListView.vue'
-import BalanceDashboardView from '@/views/balance/BalanceDashboardView.vue'
-import ExpensesLimitListView from '@/views/dashboard/ExpensesLimitListView.vue'
-import DashboardView from '@/views/dashboard/DashboardView.vue'
-import BalanceView from '@/views/balance/BalanceView.vue'
-import BalanceTransfersListView from '@/views/balance/BalanceTransfersListView.vue'
-import ProjectListView from '@/views/projects/ProjectListView.vue'
+import ExpensesView from '@/views/expenses/ExpensesPage.vue'
+import UserProfileView from '@/views/profile/UserProfile.vue'
+import ProjectUserListView from '@/views/projects/users/ProjectUserList.vue'
+import ProjectSettingsView from '@/views/projects/ProjectSettings.vue'
+import StatisticExpensesListView from '@/views/statistic/StatisticExpenseList.vue'
+import StatisticDashboardView from '@/views/statistic/StatisticDashboard.vue'
+import BalanceDepositListView from '@/views/balance/deposits/DepositList.vue'
+import BalanceStorageListView from '@/views/balance/storages/StorageList.vue'
+import ExpensesLimitListView from '@/views/expenses/limits/ExpenseLimitList.vue'
+import ExpenseListView from '@/views/expenses/ExpenseList.vue'
+import BalanceView from '@/views/balance/BalancePage.vue'
+import BalanceTransferListView from '@/views/balance/transfers/TransferList.vue'
+import ProjectListView from '@/views/projects/ProjectList.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import { useAuthStore } from '@/stores/auth';
+import SignUpView from '@/views/auth/SignUpView.vue'
+import SecuritySettingsView from '@/views/profile/SecuritySettings.vue'
+import ProfileSettingsView from '@/views/profile/ProfileSettings.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeView, //Login or DashboardView (Edit limits will be in modal)
+      component: ExpensesView, //DashboardView (Edit limits will be in modal)
       children:[
         {
           path:"",
-          name:"dashboard",
-          component:DashboardView
+          name:"expenses",
+          component:ExpenseListView
         },
         {
           path: '/limits',
@@ -35,7 +43,24 @@ const router = createRouter({
         },
       ]
     },
-
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta:{
+          authNotRequired:true,
+          onlyUnathorized:true
+      }
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignUpView,
+      meta:{
+          authNotRequired:true,
+          onlyUnathorized:true
+      }
+    },
     { 
       path: '/balance',
       component: BalanceView, //list of current items of balance with CRUD feature, total amount with tabs for details
@@ -43,7 +68,7 @@ const router = createRouter({
         {
           path:"",
           name:"balance",
-          component:BalanceDashboardView
+          component:BalanceStorageListView
         },
         {
           path:"deposits",
@@ -53,7 +78,7 @@ const router = createRouter({
         {
           path:"transfers",
           name:"transfers",
-          component:BalanceTransfersListView //List of debits with CRUD feature;
+          component:BalanceTransferListView //List of debits with CRUD feature;
         },
       ]
     },
@@ -70,7 +95,7 @@ const router = createRouter({
     {
       path: '/projects',
       name: 'projectsettings',
-      component: ProjectsSettingsView, //list of projects;
+      component: ProjectSettingsView, //list of projects;
       children:[
         { 
           path: '',
@@ -78,29 +103,64 @@ const router = createRouter({
           component: ProjectListView, //list of users with CRUD features
         },
         { 
-          path: ':id/users',
+          path: 'users',
+          name:"projectUsers",
           component: ProjectUserListView, //list of users with CRUD features
-        },
-        { 
-          path: ':id/currency',
-          component: ProjectCurrencyListView, //list of currency with CRUD features
-        },
-        { 
-          path: ':id/expensetypes',
-          component: ProjectExpencesTypeListView, //list of type expenses with CRUD features
         },
       ]
     },
     { 
       path: '/profile',
       component: UserProfileView, //avatar, username, password form etc.
-      // children:[
-      //   //password change,
-      //   //notifications
-      //   //etc.
-      // ]
+      children:[
+        { 
+          path: '',
+          name:"profile",
+          component: ProfileSettingsView, //list of users with CRUD features
+        },
+        { 
+          path: 'security',
+          name:"security",
+          component: SecuritySettingsView, //list of users with CRUD features
+        },
+      ]
     },
   ] 
+});
+
+async function getCurrentUser(){
+  const auth = useAuthStore();
+  console.log('token exist trying get user');
+  await auth.syncCurrentUser();
+}
+
+const checkRouteMeta = (to, from, next, auth)=>{
+  if(to.meta.authNotRequired) {
+    if(to.meta.onlyUnathorized && auth.user){
+        return next("/");
+      }
+    return next();
+  }
+  if(!auth.user){
+    return next("/login");
+  }
+  return next();
+}
+
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore();
+      // Non-protected route, allow access
+  if(!auth.user && auth.token) {
+      try {
+        await getCurrentUser();
+        return checkRouteMeta(to, from, next, auth);
+      }catch(e){
+        next("/login");
+      }
+    // User is not authenticated, redirect to login
+  }else{
+      checkRouteMeta(to, from, next, auth);
+  }
 });
 
 export default router

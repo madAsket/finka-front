@@ -1,29 +1,14 @@
-# finka-front
+# Finka project
+Front-End part of the project
 
-This template should help get you started developing with Vue 3 in Vite.
+### Installation
+Docker & Docker compose are required.
 
-## Recommended IDE Setup
+#### Testing&Development
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+##### Preview mode
 ```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
+docker-compose -f docker-compose.preview.yaml build
+docker-compose -f docker-compose.preview.yaml up -d
 ```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+Service will be available here: http://localhost:5173

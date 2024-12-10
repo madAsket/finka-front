@@ -1,0 +1,7 @@
+services:
+  finka-front:
+    container_name: finka-front
+    ports:
+      - "5173:5173"
+    build: .
+    command: sh -c "npm run build && npm run preview"

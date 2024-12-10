@@ -2,7 +2,12 @@
 export default {
   content: ["./index.html", "./src/**/*.{vue, js, jsx, ts, tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontSize:{
+        'xxs':"8px",
+        '2xs':"10px"
+      }
+    },
   },
   plugins: [require('tailwindcss-primeui')],
   "editor.quickSuggestions": {
