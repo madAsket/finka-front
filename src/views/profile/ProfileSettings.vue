@@ -13,6 +13,7 @@ import { useToastManger } from '@/composables/toaster';
 const toastManager = useToastManger();
 
 const auth = useAuthStore();
+const submiting = ref(false);
 
 const schema = yup.object({
   firstName: yup.string().required().min(3).max(50).label('First name'),
@@ -36,7 +37,9 @@ onMounted(()=>{
 
 
 const onSave = handleSubmit(async (values) => {
+  submiting.value = true;
   const data = await auth.editProfile(values);
+  submiting.value = false;
   if(data.status === "success"){
       toastManager.show("Profile updated!");
   }else{
@@ -84,7 +87,7 @@ const onFileSelect = async (data)=>{
               </div>
             </div>
             <div class="pt-8 flex items-center justify-end">
-                <Button label="Save profile" type="submit" class="small text-sm" small />
+                <Button :loading="submiting" :disabled="submiting" label="Save profile" type="submit" class="small text-sm" small />
             </div>
           </form>
         <div class="border-t pt-5">

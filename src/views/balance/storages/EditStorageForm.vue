@@ -13,7 +13,7 @@ const balanceStore = useBalanceStore();
 const dialogRef = inject('dialogRef');
 
 const storage = ref(dialogRef.value.data.storage);
-
+const submiting = ref(false);
 const schema = yup.object({
     name: yup.string().required().max(50).label('Name')
 });
@@ -29,7 +29,9 @@ onMounted(()=>{
 });
 
 const onEditStorage = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await balanceStore.editStorage(storage.value.projectId, storage.value.id, values);
+    submiting.value = false;
     if(result.status === "success"){
         storage.value.name = values.name;
         dialogRef.value.close();
@@ -55,7 +57,7 @@ const onEditStorage = handleSubmit(async (values) => {
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Save" class="ml-2" type="submit" autofocus />
+            <Button :loading="submiting" :disabled="submiting" label="Save" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

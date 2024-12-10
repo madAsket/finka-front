@@ -17,6 +17,7 @@ const projectStore = useProjectStore();
 const dialogRef = inject('dialogRef');
 const users = ref([]);
 const model = ref(dialogRef.value.data.model);
+const submiting = ref(false);
 
 const schema = yup.object({
     transferredAt: yup.date().required().label('Transfer date'),
@@ -39,7 +40,9 @@ onMounted(async()=>{
 });
 
 const onEdit = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await balanceStore.editTransfer(model.value.projectId, model.value.id, values);
+    submiting.value = false;
     if(result.status === "success"){
         Object.assign(model.value, result);
         emit('save');
@@ -90,7 +93,7 @@ const onEdit = handleSubmit(async (values) => {
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Save" class="ml-2" type="submit" autofocus />
+            <Button :loading="submiting" :disabled="submiting" label="Save" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

@@ -11,6 +11,7 @@ import { useToastManger } from '@/composables/toaster';
 
 const toastManager = useToastManger();
 const auth = useAuthStore();
+const submiting = ref(false);
 
 const schema = yup.object({
   password: yup.string().required().min(5).label('Password'),
@@ -37,7 +38,9 @@ const logout = ()=>{
 }
 
 const onSave = handleSubmit(async (values) => {
+  submiting.value = true;
   const data = await auth.changePassword(values);
+  submiting.value = false;
   if(data.status === "success"){
       toastManager.show("Password updated!");
       resetForm();
@@ -71,7 +74,7 @@ const onSave = handleSubmit(async (values) => {
               </div>
             </div>
             <div class="pt-8 flex items-center justify-end">
-                <Button label="Update password" type="submit" class="small text-sm" small />
+                <Button :loading="submiting" :disabled="submiting" label="Update password" type="submit" class="small text-sm" small />
             </div>
           </form>
           <div class="border-t mt-10">

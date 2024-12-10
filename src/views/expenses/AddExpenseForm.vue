@@ -1,6 +1,4 @@
 <script setup>
-import Dialog from 'primevue/dialog';
-import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select'
@@ -24,6 +22,7 @@ const categories = ref([]);
 const storages = ref([]);
 const users = ref([]);
 const fromStorage = ref();
+const submiting = ref(false);
 
 const schema = yup.object({
   amount: yup.number().required().min(0.0000000001,"Min 0.0000000001").max(9999999999999999999.9999999999).label('Amount'),
@@ -66,7 +65,9 @@ watch(storage, (newValue)=>{
 });
 
 const onAddExpense = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await balanceStore.addExpense(projectStore.currentProject.Project.id, values);
+    submiting.value = false;
     if(result.status === "success"){
         dialogRef.value.close();
         toastManager.show("Expense added!");
@@ -145,7 +146,7 @@ const onAddExpense = handleSubmit(async (values) => {
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Add" class="ml-2" type="submit" autofocus />
+            <Button :loading="submiting" :disabled="submiting" label="Add" class="ml-2" type="submit" autofocus />
         </div>
     </form> 
 </template>

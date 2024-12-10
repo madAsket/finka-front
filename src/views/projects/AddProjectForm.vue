@@ -7,13 +7,13 @@ import Checkbox from 'primevue/checkbox';
 import Select from 'primevue/select'
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import { ref, onUpdated, onMounted, watch } from 'vue';
+import { ref, onUpdated, } from 'vue';
 import {useProjectStore} from "@/stores/project"
-import { useBalanceStore } from '@/stores/balance';
 import { useToastManger } from '@/composables/toaster';
 
 const toastManager = useToastManger();
 const visible = defineModel('visible');
+const submiting = ref(false);
 
 const emit = defineEmits(['add-project'])
 const projectStore = useProjectStore();
@@ -43,7 +43,9 @@ onUpdated(()=>{
 
 
 const onAddProject = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await projectStore.addProject(values);
+    submiting.value = false;
     if(result.status === "success"){
         emit('add-project', result.newProject);
         toastManager.show("Project created!");
@@ -85,7 +87,7 @@ const onAddProject = handleSubmit(async (values) => {
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
-            <Button label="Add" class="ml-2" type="submit" autofocus />
+            <Button :loading="submiting" :disabled="submiting" label="Add" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </Dialog>    

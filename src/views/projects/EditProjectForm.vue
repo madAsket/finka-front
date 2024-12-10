@@ -11,6 +11,7 @@ import { useToastManger } from '@/composables/toaster';
 const toastManager = useToastManger();
 const projectStore = useProjectStore();
 const dialogRef = inject('dialogRef');
+const submiting = ref(false);
 
 const project = ref(dialogRef.value.data.project);
 
@@ -30,7 +31,9 @@ onMounted(()=>{
 
 
 const onEditProject = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await projectStore.editProject(project.value.Project.id, values);
+    submiting.value = false;
     if(result.status === "success"){
         project.value.Project.name = values.name;
         dialogRef.value.close();
@@ -57,7 +60,7 @@ const onEditProject = handleSubmit(async (values) => {
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Save" class="ml-2" type="submit" autofocus />
+            <Button :loading="submiting" :disabled="submiting" label="Save" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

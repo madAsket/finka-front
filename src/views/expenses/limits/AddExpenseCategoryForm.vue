@@ -5,7 +5,7 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Message from 'primevue/message';
 import InputNumber from 'primevue/inputnumber'
-import { onUpdated, computed } from 'vue';
+import { onUpdated, computed, ref } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import {useProjectStore} from "@/stores/project"
@@ -16,7 +16,7 @@ const toastManager = useToastManger();
 const emit = defineEmits(['add-category'])
 const projectStore = useProjectStore()
 const balanceStore = useBalanceStore()
-
+const submiting = ref(false);
 
 const visible = defineModel('visible');
 
@@ -37,7 +37,9 @@ onUpdated(()=>{
 })
 
 const onAddCategory = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await balanceStore.addExpenseCategory(projectStore.currentProject.Project.id, values);
+    submiting.value = false;
     emit('add-category', result);
     toastManager.show("Category added!");
 });
@@ -71,7 +73,7 @@ const currentNewMonthLimit = computed(() => {
             </div>
             <div class="flex justify-end">
                 <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
-                <Button label="Add" class="ml-2" type="submit" autofocus />
+                <Button :loading="submiting" :disabled="submiting" label="Add" class="ml-2" type="submit" autofocus />
             </div>
         </form>
     </Dialog>    

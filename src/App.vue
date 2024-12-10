@@ -32,7 +32,7 @@ const isPublicPage = computed(()=>{
   <DynamicDialog />
   <div class="app-container flex flex-row h-full justify-center ">
     <TheMenu v-if="auth.user"/>
-    <main class="h-full min-h-screen w-full bg-white pb-4 main-container"
+    <main class="h-full min-h-screen w-full bg-white main-container"
     :class="{'col-span-2':isPublicPage}">
       <RouterView></RouterView>
       <section v-if="auth.user" class="relative">
@@ -60,6 +60,7 @@ const isPublicPage = computed(()=>{
       }
       .main-container{
         order:0;
+        padding-bottom:60px;
       }
   }
 </style>

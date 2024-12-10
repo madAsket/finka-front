@@ -8,7 +8,9 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { useAuthStore } from '@/stores/auth';
 import router from "@/router/index"
+
 const rememberMe = ref(true);
+const submiting = ref(false);
 
 const schema = yup.object({
   email: yup.string().required().email().label('Email address'),
@@ -24,7 +26,9 @@ const [password] = defineField('password');
 
 const onLogin = handleSubmit(async (values) => {
     const auth = useAuthStore();
+    submiting.value = true;
     const data = await auth.login(values);
+    submiting.value = false;
     if(data.status === "success"){
         router.push("/");
     }else{
@@ -78,7 +82,7 @@ const onLogin = handleSubmit(async (values) => {
                         </div>
                         <a class="font-medium no-underline ml-2 text-primary text-right cursor-pointer">Forgot password?</a>
                     </div>
-                    <Button label="Sign In" type="submit" icon="pi pi-user" class="w-full" />
+                    <Button label="Sign In" type="submit" icon="pi pi-user" :loading="submiting" :disabled="submiting" class="w-full" />
                 </form>
             </div>
         </div>

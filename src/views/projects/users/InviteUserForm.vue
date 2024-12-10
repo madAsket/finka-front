@@ -13,6 +13,7 @@ const toastManager = useToastManger();
 const visible = defineModel('visible')
 const projectStore = useProjectStore();
 const emit = defineEmits(['add-user'])
+const submiting = ref(false);
 
 const schema = yup.object({
     email: yup.string().email().required().max(50).label('Email'),
@@ -30,7 +31,9 @@ onUpdated(()=>{
 
 
 const onAddUser = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await projectStore.inviteUserToProject(projectStore.currentProject.projectId, values);
+    submiting.value = false;
     if(result.status === "success"){
         emit('add-user', result);
         toastManager.show("User added!");
@@ -58,7 +61,7 @@ const onAddUser = handleSubmit(async (values) => {
             </div>
             <div class="flex justify-end">
                 <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
-                <Button label="Invite" class="ml-2" type="submit"  autofocus />
+                <Button :loading="submiting" :disabled="submiting" label="Invite" class="ml-2" type="submit"  autofocus />
             </div>
         </form>
     </Dialog>    

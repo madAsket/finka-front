@@ -18,6 +18,7 @@ const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
 
 const visible = defineModel('visible')
+const submiting = ref(false);
 
 const schema = yup.object({
   name: yup.string().required().label('Name'),
@@ -39,7 +40,9 @@ onUpdated(()=>{
 });
 
 const onAddStorage = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await balanceStore.addStorage(projectStore.currentProject.Project.id, values);
+    submiting.value = false;
     emit('add-storage', result);
     visible.value = false;
     toastManager.show("Storage added");
@@ -75,7 +78,7 @@ const onAddStorage = handleSubmit(async (values) => {
             </div>
             <div class="flex justify-end">
                 <Button label="Cancel" text severity="secondary" @click="visible = false" autofocus />
-                <Button label="Add" class="ml-2" type="submit" autofocus />
+                <Button :loading="submiting" :disabled="submiting" label="Add" class="ml-2" type="submit" autofocus />
             </div>
         </form>
     </Dialog>    

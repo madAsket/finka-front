@@ -12,13 +12,14 @@ import {useProjectStore} from "@/stores/project"
 import {useAuthStore} from "@/stores/auth"
 import { useBalanceStore } from '@/stores/balance';
 import { useToastManger } from '@/composables/toaster';
-const toastManager = useToastManger();
 
+const toastManager = useToastManger();
 const dialogRef = inject('dialogRef');
 const emit = defineEmits(['save']);
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
 const balanceStore = useBalanceStore();
+const submiting = ref(false);
 
 const schema = yup.object({
   fromStorage: yup.number().required().label('From Storage'),
@@ -42,7 +43,9 @@ const [receivedAmount] = defineField('receivedAmount');
 
 
 const onAddTransfer = handleSubmit(async (values) => {
+    submiting.value = true;
     const result = await balanceStore.addTransfer(projectStore.currentProject.projectId, values);
+    submiting.value = false;
     if(result.status === "success"){
         emit('save', result);
         dialogRef.value.close();
@@ -175,7 +178,7 @@ watch(toStorage, (newValue)=>{
         </div>
         <div class="flex justify-end">
             <Button label="Cancel" text severity="secondary" @click="dialogRef.close()" autofocus />
-            <Button label="Transfer" class="ml-2" type="submit" autofocus />
+            <Button :loading="submiting" :disabled="submiting" label="Transfer" class="ml-2" type="submit" autofocus />
         </div>
     </form>
 </template>

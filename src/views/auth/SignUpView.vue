@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/auth';
 import router from "@/router/index"
 
 const auth = useAuthStore();
+const submiting = ref(false);
 
 const schema = yup.object({
   username: yup.string().required().label('Username'),
@@ -34,8 +35,9 @@ onMounted(()=>{
 })
 
 const onSignUp = handleSubmit(async (values) => {
-
+    submiting.value = true;
     const data = await auth.signUp(values);
+    submiting.value = false;
     if(data.status === "success"){
         router.push("/");
     }else{
@@ -94,7 +96,7 @@ const onSignUp = handleSubmit(async (values) => {
                         :class="{ 'p-invalid': errors.confirmPassword }" />
                         <Message v-if="errors.confirmPassword"  size="small" severity="error" variant="simple">{{errors.confirmPassword}}</Message>
                     </div>
-                    <Button label="Sign Up" type="submit" icon="pi pi-user" class="w-full" />
+                    <Button :loading="submiting" :disabled="submiting"  label="Sign Up" type="submit" icon="pi pi-user" class="w-full" />
                 </form>
             </div>
         </div>
