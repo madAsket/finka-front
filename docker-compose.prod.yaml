@@ -1,0 +1,7 @@
+services:
+  front:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.prod
+    container_name: finka-front
+    env_file: ./.env.production

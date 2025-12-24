@@ -1,0 +1,15 @@
+FROM node:20.12.1 as front
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+COPY tailwind.config.js ./
+COPY vite.config.js ./
+COPY postcss.config.js ./
+COPY jsconfig.json ./
+COPY index.html ./
+COPY public ./
+COPY .env ./
+COPY .env.production ./
+COPY . .
+RUN npm install
+RUN npm run build
